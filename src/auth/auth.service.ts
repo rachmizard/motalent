@@ -10,7 +10,9 @@ import { AccountService } from 'src/account/account.service';
 import { CryptoService } from 'src/shared/crypto/crypto.service';
 
 import { SignUpDTO } from './auth.dto';
-import { AccountEntity } from 'src/account/account.entity';
+
+import { AccountDTO, CreateAccountDTO } from 'src/account/account.dto';
+import { AccountMapper } from 'src/account/account.mapper';
 
 @Injectable()
 export class AuthService {
@@ -58,21 +60,29 @@ export class AuthService {
 
     const salt = this.cryptoService.generateSalt();
 
-    const payload = {
+    const payload: Partial<CreateAccountDTO> = {
       name: signUpDTO.name,
       email: signUpDTO.email,
       password: await this.cryptoService.hashPassword(signUpDTO.password, salt),
-      hash: salt,
       salt,
     };
 
-    const account = new AccountEntity(payload);
-    await this.accountService.create(account);
+    await this.accountService.create(payload);
   }
 
   async accountExists(email: string): Promise<boolean> {
     const user = await this.accountService.findOne(email);
 
     return !!user;
+  }
+
+  async getProfile(id: string): Promise<AccountDTO> {
+    const user = await this.accountService.findById(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return AccountMapper.toDTO(user);
   }
 }

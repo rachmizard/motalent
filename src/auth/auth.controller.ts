@@ -42,9 +42,10 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() req: any) {
+  async getProfile(@Request() req: any) {
+    const account = await this.authService.getProfile(req.user.id);
     return BaseResponse.success(
-      req.user,
+      account,
       'Account Retrieved Successfully',
       HttpStatus.OK,
     );

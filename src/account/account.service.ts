@@ -3,6 +3,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { AccountEntity } from './account.entity';
+import { CreateAccountDTO } from './account.dto';
+import { AccountMapper } from './account.mapper';
 
 @Injectable()
 export class AccountService {
@@ -27,8 +29,9 @@ export class AccountService {
     return result;
   }
 
-  async create(account: AccountEntity): Promise<AccountEntity> {
-    const result = await this.accountRepository.save(account);
+  async create(account: CreateAccountDTO): Promise<AccountEntity> {
+    const entity = AccountMapper.toEntity(account);
+    const result = await this.accountRepository.save(entity);
 
     return result;
   }
