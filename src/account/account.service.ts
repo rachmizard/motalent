@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 type User = {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   password: string;
@@ -24,5 +24,14 @@ export class AccountService {
 
   async findById(id: number): Promise<User | undefined> {
     return this.users.find((user) => user.id === id);
+  }
+
+  async create(user: User): Promise<User> {
+    this.users.push({
+      ...user,
+      id: this.users.length + 1,
+    });
+
+    return user;
   }
 }

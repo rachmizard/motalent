@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -6,6 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 
 import { AccountService } from 'src/account/account.service';
+import { SignUpDTO } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,5 +36,26 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async signUp(signUpDTO: SignUpDTO) {
+    if (signUpDTO.password !== signUpDTO.password_confirmation) {
+      throw new BadRequestException('Password confirmation does not match');
+    }
+
+    const accountExists = await this.accountExists(signUpDTO.email);
+    if (accountExists) throw new BadRequestException('Email already exists');
+
+    return await this.accountService.create({
+      name: signUpDTO.name,
+      email: signUpDTO.email,
+      password: signUpDTO.password,
+    });
+  }
+
+  async accountExists(email: string): Promise<boolean> {
+    const user = await this.accountService.findOne(email);
+
+    return !!user;
   }
 }
