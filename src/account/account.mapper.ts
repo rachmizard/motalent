@@ -3,7 +3,8 @@ import { AccountEntity } from './account.entity';
 import { CreateAccountDTO, GetAccountDTO, UpdateAccountDTO } from './dtos';
 export class AccountMapper {
   static toEntity(dto: Partial<CreateAccountDTO | UpdateAccountDTO>) {
-    const { name, email, password, salt, is_active, role, status } = dto;
+    const { name, email, password, salt, is_active, role, status, client } =
+      dto;
     const payload = {
       name,
       email,
@@ -12,6 +13,7 @@ export class AccountMapper {
       is_active,
       role,
       status,
+      client,
     };
     return new AccountEntity(payload);
   }

@@ -7,6 +7,7 @@ import { AccountModule } from './account/account.module';
 import { CryptoModule } from './shared/crypto/crypto.module';
 import { DatabaseModule } from './database/database.module';
 import { AppConfigModule } from './shared/app-config/app-config.module';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AppConfigModule } from './shared/app-config/app-config.module';
     CryptoModule,
     DatabaseModule,
     AppConfigModule,
+    ClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],

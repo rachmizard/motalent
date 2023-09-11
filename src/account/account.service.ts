@@ -6,12 +6,16 @@ import { AccountMapper } from './account.mapper';
 
 import { DI_TYPES } from 'src/shared/di.types';
 import { CreateAccountDTO } from './dtos/create-account.dto';
+import { UpdateAccountDTO } from './dtos';
+
+import { ClientService } from 'src/client/client.service';
 
 @Injectable()
 export class AccountService {
   constructor(
     @Inject(DI_TYPES.ACCOUNT_REPO)
     private accountRepository: Repository<AccountEntity>,
+    private clientService: ClientService,
   ) {}
 
   async findOne(email: string): Promise<AccountEntity | undefined> {
@@ -30,10 +34,32 @@ export class AccountService {
     return result;
   }
 
-  async create(account: CreateAccountDTO): Promise<AccountEntity> {
-    const entity = AccountMapper.toEntity(account);
-    const result = await this.accountRepository.save(entity);
+  async create(dto: CreateAccountDTO): Promise<AccountEntity> {
+    const account = this.accountRepository.create(dto);
+    const savedAccount = await this.accountRepository.save(account);
 
-    return result;
+    const savedClient = await this.clientService.createClient({
+      account: savedAccount,
+      name: dto.name,
+    });
+
+    account.client = savedClient;
+
+    return await this.accountRepository.save(account);
+  }
+
+  async update(account: UpdateAccountDTO): Promise<AccountEntity> {
+    const result = await this.accountRepository.findOneBy({
+      id: account?.id,
+    });
+
+    if (!result) {
+      throw new Error('Account not found');
+    }
+
+    const entity = AccountMapper.toEntity(account);
+    await this.accountRepository.update(result.id, entity);
+
+    return entity;
   }
 }

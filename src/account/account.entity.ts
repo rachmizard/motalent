@@ -1,5 +1,12 @@
+import { ClientEntity } from 'src/client/client.entity';
 import { Role, Status } from 'src/shared/enums/role.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({
   name: 'accounts',
@@ -71,4 +78,10 @@ export class AccountEntity {
     nullable: true,
   })
   updated_at: Date;
+
+  @OneToOne(() => ClientEntity, (account) => account.account)
+  @JoinColumn({
+    name: 'client_id',
+  })
+  client: ClientEntity;
 }
