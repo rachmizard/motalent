@@ -11,8 +11,10 @@ import { CryptoService } from 'src/shared/crypto/crypto.service';
 
 import { SignUpDTO } from './auth.dto';
 
-import { AccountDTO, CreateAccountDTO } from 'src/account/account.dto';
 import { AccountMapper } from 'src/account/account.mapper';
+import { CreateAccountDTO } from 'src/account/dtos/create-account.dto';
+import { Role, Status } from 'src/shared/enums/role.enum';
+import { GetAccountDTO } from 'src/account/dtos/get-account.dto';
 
 @Injectable()
 export class AuthService {
@@ -60,11 +62,14 @@ export class AuthService {
 
     const salt = this.cryptoService.generateSalt();
 
-    const payload: Partial<CreateAccountDTO> = {
+    const payload: CreateAccountDTO = {
       name: signUpDTO.name,
       email: signUpDTO.email,
       password: await this.cryptoService.hashPassword(signUpDTO.password, salt),
       salt,
+      is_active: true,
+      role: Role.CLIENT,
+      status: Status.ACTIVE,
     };
 
     await this.accountService.create(payload);
@@ -76,7 +81,7 @@ export class AuthService {
     return !!user;
   }
 
-  async getProfile(id: string): Promise<AccountDTO> {
+  async getProfile(id: string): Promise<GetAccountDTO> {
     const user = await this.accountService.findById(id);
 
     if (!user) {

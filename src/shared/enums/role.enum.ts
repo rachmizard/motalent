@@ -3,3 +3,8 @@ export enum Role {
   CLIENT = 'client',
   TALENT = 'talent',
 }
+
+export enum Status {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}

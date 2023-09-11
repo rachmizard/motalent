@@ -4,6 +4,7 @@ export interface AppDatabaseConfig {
   user: string;
   password: string;
   name: string;
+  syncronize?: boolean;
 }
 
 export interface AppConfiguration {
@@ -19,5 +20,6 @@ export default (): AppConfiguration => ({
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
     name: process.env.DATABASE_NAME,
+    syncronize: process.env.DATABASE_AUTO_SYNCRONIZE === 'true',
   },
 });

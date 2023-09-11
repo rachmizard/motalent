@@ -1,15 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 
 import { AccountEntity } from './account.entity';
-import { CreateAccountDTO } from './account.dto';
 import { AccountMapper } from './account.mapper';
+
+import { DI_TYPES } from 'src/shared/di.types';
+import { CreateAccountDTO } from './dtos/create-account.dto';
 
 @Injectable()
 export class AccountService {
   constructor(
-    @InjectRepository(AccountEntity)
+    @Inject(DI_TYPES.ACCOUNT_REPO)
     private accountRepository: Repository<AccountEntity>,
   ) {}
 

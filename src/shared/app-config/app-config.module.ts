@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppConfigService } from './app-config.service';
 import { ConfigModule } from '@nestjs/config';
 
 import appConfigConfiguration from './app-config.configuration';
+
+import { appConfigProviders } from './app-config.providers';
+import { AppConfigService } from './app-config.service';
 
 @Module({
   imports: [
@@ -11,7 +13,7 @@ import appConfigConfiguration from './app-config.configuration';
       envFilePath: ['.env.local', '.env.development', '.env.production'],
     }),
   ],
-  providers: [AppConfigService],
-  exports: [AppConfigService],
+  providers: [AppConfigService, ...appConfigProviders],
+  exports: [AppConfigService, ...appConfigProviders],
 })
 export class AppConfigModule {}

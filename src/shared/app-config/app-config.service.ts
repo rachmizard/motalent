@@ -34,4 +34,8 @@ export class AppConfigService {
   getDatabaseName(): string {
     return this.getDatabaseConfig().name;
   }
+
+  getDatabaseAutoSynchronize(): boolean {
+    return this.getDatabaseConfig().syncronize;
+  }
 }
