@@ -10,6 +10,7 @@ import { AccountService } from 'src/account/account.service';
 import { CryptoService } from 'src/shared/crypto/crypto.service';
 
 import { SignUpDTO } from './auth.dto';
+import { AccountEntity } from 'src/account/account.entity';
 
 @Injectable()
 export class AuthService {
@@ -57,7 +58,7 @@ export class AuthService {
 
     const salt = this.cryptoService.generateSalt();
 
-    const createdAccount = {
+    const payload = {
       name: signUpDTO.name,
       email: signUpDTO.email,
       password: await this.cryptoService.hashPassword(signUpDTO.password, salt),
@@ -65,7 +66,8 @@ export class AuthService {
       salt,
     };
 
-    await this.accountService.create(createdAccount);
+    const account = new AccountEntity(payload);
+    await this.accountService.create(account);
   }
 
   async accountExists(email: string): Promise<boolean> {
