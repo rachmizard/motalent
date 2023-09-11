@@ -65,7 +65,11 @@ export class AuthService {
       salt,
     };
 
-    return await this.accountService.create(createdAccount);
+    await this.accountService.create(createdAccount);
+
+    return {
+      message: 'Account created successfully',
+    };
   }
 
   async accountExists(email: string): Promise<boolean> {
