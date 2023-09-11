@@ -13,7 +13,7 @@ import { Public } from './auth.decorator';
 import { SignInDTO, SignUpDTO } from './auth.dto';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { BaseResponse } from 'src/shared/dto/base-response.dto';
+import { BaseResponse } from 'src/shared/response/base.response';
 
 @Controller('auth')
 export class AuthController {
