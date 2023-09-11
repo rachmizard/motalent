@@ -13,6 +13,7 @@ import { Public } from './auth.decorator';
 import { SignInDTO, SignUpDTO } from './auth.dto';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { BaseResponseDTO } from 'src/shared/dto/base-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,19 +23,30 @@ export class AuthController {
   @Post('sign-in')
   @Public()
   async signIn(@Body() signInDTO: SignInDTO) {
-    return await this.authService.signIn(signInDTO.email, signInDTO.password);
+    const signedInResult = await this.authService.signIn(
+      signInDTO.email,
+      signInDTO.password,
+    );
+
+    return BaseResponseDTO.success(signedInResult, 'Signed in', HttpStatus.OK);
   }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
   @Public()
   async signUp(@Body() signUpDTO: SignUpDTO) {
-    return await this.authService.signUp(signUpDTO);
+    await this.authService.signUp(signUpDTO);
+
+    return BaseResponseDTO.success(null, 'Account created', HttpStatus.CREATED);
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req: any) {
-    return req.user ?? null;
+    return BaseResponseDTO.success(
+      req.user,
+      'Account Retrieved Successfully',
+      HttpStatus.OK,
+    );
   }
 }
