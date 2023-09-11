@@ -13,7 +13,7 @@ import { Public } from './auth.decorator';
 import { SignInDTO, SignUpDTO } from './auth.dto';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { BaseResponseDTO } from 'src/shared/dto/base-response.dto';
+import { BaseResponse } from 'src/shared/dto/base-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +28,7 @@ export class AuthController {
       signInDTO.password,
     );
 
-    return BaseResponseDTO.success(signedInResult, 'Signed in', HttpStatus.OK);
+    return BaseResponse.success(signedInResult, 'Signed in', HttpStatus.OK);
   }
 
   @HttpCode(HttpStatus.CREATED)
@@ -37,13 +37,13 @@ export class AuthController {
   async signUp(@Body() signUpDTO: SignUpDTO) {
     await this.authService.signUp(signUpDTO);
 
-    return BaseResponseDTO.success(null, 'Account created', HttpStatus.CREATED);
+    return BaseResponse.success(null, 'Account created', HttpStatus.CREATED);
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req: any) {
-    return BaseResponseDTO.success(
+    return BaseResponse.success(
       req.user,
       'Account Retrieved Successfully',
       HttpStatus.OK,

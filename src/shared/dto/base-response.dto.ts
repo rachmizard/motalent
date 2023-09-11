@@ -1,4 +1,4 @@
-type BaseResponseDTOProps<T, E = any> = {
+type BaseResponseProps<T, E = any> = {
   status: 'success' | 'error';
   message: string;
   statusCode: number;
@@ -6,14 +6,14 @@ type BaseResponseDTOProps<T, E = any> = {
   errors?: E;
 };
 
-export class BaseResponseDTO<T, E = any> {
+export class BaseResponse<T, E = any> {
   status: 'success' | 'error';
   message: string;
   statusCode: number;
   data?: T;
   errors?: E;
 
-  constructor(props: BaseResponseDTOProps<T, E>) {
+  constructor(props: BaseResponseProps<T, E>) {
     this.status = props.status;
     this.message = props.message;
     this.statusCode = props.statusCode;
@@ -38,7 +38,7 @@ export class BaseResponseDTO<T, E = any> {
   }
 
   static success<T>(data: T, message = 'Success', statusCode = 200) {
-    return new BaseResponseDTO<T>({
+    return new BaseResponse<T>({
       message,
       status: 'success',
       statusCode,
@@ -47,7 +47,7 @@ export class BaseResponseDTO<T, E = any> {
   }
 
   static error<T>(errors: T, message = 'Error', statusCode = 400) {
-    return new BaseResponseDTO<T>({
+    return new BaseResponse<T>({
       message,
       status: 'error',
       statusCode,
