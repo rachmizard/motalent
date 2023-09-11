@@ -6,7 +6,9 @@ import { BaseExceptionFilter } from './shared/filters/base-exception.filter';
 import { AppConfigService } from './shared/app-config/app-config.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'debug', 'fatal', 'verbose'],
+  });
   const appConfig = app.get(AppConfigService);
 
   app.useGlobalPipes(new ValidationPipe());
