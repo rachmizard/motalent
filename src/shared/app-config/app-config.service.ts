@@ -7,6 +7,10 @@ import { AppDatabaseConfig } from './app-config.configuration';
 export class AppConfigService {
   constructor(private configServce: ConfigService) {}
 
+  getAppPort(): number {
+    return this.configServce.get<number>('port');
+  }
+
   getDatabaseConfig(): AppDatabaseConfig {
     return this.configServce.get<AppDatabaseConfig>('database');
   }

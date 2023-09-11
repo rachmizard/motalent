@@ -3,11 +3,14 @@ import { ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from './app.module';
 import { BaseExceptionFilter } from './shared/filters/base-exception.filter';
+import { AppConfigService } from './shared/app-config/app-config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const appConfig = app.get(AppConfigService);
+
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new BaseExceptionFilter());
-  await app.listen(3000);
+  await app.listen(appConfig.getAppPort());
 }
 bootstrap();
