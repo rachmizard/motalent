@@ -5,18 +5,13 @@ type User = {
   name: string;
   email: string;
   password: string;
+  salt?: string;
+  hash?: string;
 };
 
 @Injectable()
 export class AccountService {
-  private readonly users: User[] = [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'johndoe@mail.com',
-      password: '123456',
-    },
-  ];
+  private readonly users: User[] = [];
 
   async findOne(email: string): Promise<User | undefined> {
     return this.users.find((user) => user.email === email);

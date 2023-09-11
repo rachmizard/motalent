@@ -7,6 +7,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 
 import { AccountService } from 'src/account/account.service';
+import { CryptoService } from 'src/shared/crypto/crypto.service';
+
 import { SignUpDTO } from './auth.dto';
 
 @Injectable()
@@ -14,6 +16,7 @@ export class AuthService {
   constructor(
     private accountService: AccountService,
     private jwtService: JwtService,
+    private cryptoService: CryptoService,
   ) {}
 
   async signIn(email: string, password: string): Promise<any> {
@@ -23,7 +26,13 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    if (user && user.password !== password) {
+    const isPasswordValid = this.cryptoService.syncComparePassword(
+      password,
+      user.salt,
+      user.password,
+    );
+
+    if (user && !isPasswordValid) {
       throw new UnauthorizedException('Wrong password');
     }
 
@@ -46,11 +55,17 @@ export class AuthService {
     const accountExists = await this.accountExists(signUpDTO.email);
     if (accountExists) throw new BadRequestException('Email already exists');
 
-    return await this.accountService.create({
+    const salt = this.cryptoService.generateSalt();
+
+    const createdAccount = {
       name: signUpDTO.name,
       email: signUpDTO.email,
-      password: signUpDTO.password,
-    });
+      password: await this.cryptoService.hashPassword(signUpDTO.password, salt),
+      hash: salt,
+      salt,
+    };
+
+    return await this.accountService.create(createdAccount);
   }
 
   async accountExists(email: string): Promise<boolean> {
