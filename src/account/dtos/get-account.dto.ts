@@ -1,7 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ClientDTO } from 'src/client/dtos/client-dto';
 import { Status } from 'src/shared/enums/role.enum';
 
 export class GetAccountDTO {
+  constructor(partial: Partial<GetAccountDTO>) {
+    Object.assign(this, partial);
+  }
+
   @ApiProperty({
     name: 'id',
     description: 'The id of the Account',
@@ -39,6 +44,12 @@ export class GetAccountDTO {
     default: true,
   })
   is_active: boolean;
+
+  @ApiProperty({
+    type: 'object',
+    default: true,
+  })
+  client: ClientDTO;
 
   @ApiProperty({
     name: 'created_at',

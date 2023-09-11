@@ -79,7 +79,9 @@ export class AccountEntity {
   })
   updated_at: Date;
 
-  @OneToOne(() => ClientEntity, (account) => account.account)
+  @OneToOne(() => ClientEntity, (account) => account.account, {
+    eager: true,
+  })
   @JoinColumn({
     name: 'client_id',
   })

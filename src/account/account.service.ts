@@ -19,16 +19,20 @@ export class AccountService {
   ) {}
 
   async findOne(email: string): Promise<AccountEntity | undefined> {
-    const result = await this.accountRepository.findOneBy({
-      email,
+    const result = await this.accountRepository.findOne({
+      where: {
+        email,
+      },
     });
 
     return result;
   }
 
   async findById(id: string): Promise<AccountEntity | undefined> {
-    const result = await this.accountRepository.findOneBy({
-      id,
+    const result = await this.accountRepository.findOne({
+      where: {
+        id,
+      },
     });
 
     return result;
@@ -36,7 +40,7 @@ export class AccountService {
 
   async create(dto: CreateAccountDTO): Promise<AccountEntity> {
     const account = this.accountRepository.create(dto);
-    const savedAccount = await this.accountRepository.save(account);
+    const savedAccount = await this.save(account);
 
     const savedClient = await this.clientService.createClient({
       account: savedAccount,
@@ -45,7 +49,7 @@ export class AccountService {
 
     account.client = savedClient;
 
-    return await this.accountRepository.save(account);
+    return await this.save(account);
   }
 
   async update(account: UpdateAccountDTO): Promise<AccountEntity> {
@@ -61,5 +65,9 @@ export class AccountService {
     await this.accountRepository.update(result.id, entity);
 
     return entity;
+  }
+
+  async save(account: AccountEntity): Promise<AccountEntity> {
+    return await this.accountRepository.save(account);
   }
 }

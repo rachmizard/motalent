@@ -19,18 +19,14 @@ export class AccountMapper {
   }
 
   static toDTO(entity: AccountEntity): GetAccountDTO {
-    const { name, email, role, status, is_active, created_at, id, updated_at } =
-      entity;
-
-    return {
-      id,
-      name,
-      email,
-      role,
-      status,
-      is_active,
-      created_at,
-      updated_at,
-    };
+    return new GetAccountDTO({
+      id: entity.id,
+      name: entity.name,
+      email: entity.email,
+      role: entity.role,
+      status: entity.status,
+      is_active: entity.is_active,
+      client: entity.client,
+    });
   }
 }

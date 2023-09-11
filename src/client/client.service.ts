@@ -21,7 +21,6 @@ export class ClientService {
     if (client && String(payload.account_id) === String(client.id)) {
       throw new BadRequestException('Client already exists');
     }
-
     const state = this.clientRepository.create(payload);
     return await this.clientRepository.save(state);
   }
