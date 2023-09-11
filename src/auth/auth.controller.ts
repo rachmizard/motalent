@@ -9,12 +9,19 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { BaseResponse } from 'src/shared/response/base.response';
 import { Public } from './auth.decorator';
-import { SignInDTO, SignUpDTO } from './auth.dto';
+import { SignInDTO, SignInResponseDTO, SignUpDTO } from './auth.dto';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { BaseResponse } from 'src/shared/response/base.response';
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -22,18 +29,28 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('sign-in')
   @Public()
+  @ApiOperation({ summary: 'Sign In' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 200, description: 'OK', type: null })
   async signIn(@Body() signInDTO: SignInDTO) {
     const signedInResult = await this.authService.signIn(
       signInDTO.email,
       signInDTO.password,
     );
 
-    return BaseResponse.success(signedInResult, 'Signed in', HttpStatus.OK);
+    return BaseResponse.success<SignInResponseDTO>(
+      signedInResult,
+      'Signed in',
+      HttpStatus.OK,
+    );
   }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
   @Public()
+  @ApiOperation({ summary: 'Sign Up' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 200, description: 'OK', type: null })
   async signUp(@Body() signUpDTO: SignUpDTO) {
     await this.authService.signUp(signUpDTO);
 
@@ -42,6 +59,11 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('profile')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get Profile',
+    description: 'Get Profile',
+  })
   async getProfile(@Request() req: any) {
     const account = await this.authService.getProfile(req.user.sub);
     return BaseResponse.success(

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsEmail,
@@ -10,15 +11,28 @@ import {
 import { Role, Status } from 'src/shared/enums/role.enum';
 
 export class CreateAccountDTO {
+  @ApiProperty({
+    name: 'name',
+    example: 'Yusuf',
+    description: 'The name of the Account',
+  })
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @ApiProperty({
+    name: 'email',
+    example: 'john@mail.com',
+    description: 'The email of the Account',
+  })
   @IsEmail()
   @IsNotEmpty()
   @IsString()
   email: string;
 
+  @ApiProperty({
+    name: 'role',
+  })
   @IsEnum(Role, {
     message: `role must be a valid enum value. Valid options are ${Object.keys(
       Role,
@@ -26,6 +40,9 @@ export class CreateAccountDTO {
   })
   role: Role;
 
+  @ApiProperty({
+    name: 'password',
+  })
   @IsNotEmpty({
     message: 'Password is required',
   })
@@ -45,13 +62,22 @@ export class CreateAccountDTO {
   @IsString()
   password: string;
 
+  @ApiProperty({
+    name: 'salt',
+  })
   @IsOptional()
   @IsString()
   salt: string;
 
+  @ApiProperty({
+    name: 'status',
+  })
   @IsEnum(Status)
-  status: string;
+  status: Status;
 
+  @ApiProperty({
+    name: 'is_active',
+  })
   @IsBoolean()
   is_active: boolean;
 }

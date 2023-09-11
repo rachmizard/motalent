@@ -1,4 +1,4 @@
-import { Role } from 'src/shared/enums/role.enum';
+import { Role, Status } from 'src/shared/enums/role.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
@@ -43,7 +43,7 @@ export class AccountEntity {
     default: 'active',
     nullable: true,
   })
-  status: string;
+  status: Status;
 
   @Column({
     type: 'bool',

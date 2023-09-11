@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 type BaseResponseProps<T, E = any> = {
   status: 'success' | 'error';
   message: string;
@@ -7,10 +9,34 @@ type BaseResponseProps<T, E = any> = {
 };
 
 export class BaseResponse<T, E = any> {
+  @ApiProperty({
+    type: String,
+    enum: ['success', 'error'],
+    example: 'success',
+    description: 'Status of the response',
+  })
   status: 'success' | 'error';
+
+  @ApiProperty({
+    example: 'Success',
+    description: 'Message of the response',
+  })
   message: string;
+
+  @ApiProperty({
+    example: 200,
+    description: 'Status code of the response',
+  })
   statusCode: number;
+
+  @ApiProperty({
+    description: 'Data of the response',
+  })
   data?: T;
+
+  @ApiProperty({
+    description: 'Errors of the response',
+  })
   errors?: E;
 
   constructor(props: BaseResponseProps<T, E>) {

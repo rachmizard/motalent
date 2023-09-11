@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AccountService } from 'src/account/account.service';
 import { CryptoService } from 'src/shared/crypto/crypto.service';
 
-import { SignUpDTO } from './auth.dto';
+import { SignInResponseDTO, SignUpDTO } from './auth.dto';
 
 import { AccountMapper } from 'src/account/account.mapper';
 import { CreateAccountDTO } from 'src/account/dtos/create-account.dto';
@@ -24,7 +24,7 @@ export class AuthService {
     private cryptoService: CryptoService,
   ) {}
 
-  async signIn(email: string, password: string): Promise<any> {
+  async signIn(email: string, password: string): Promise<SignInResponseDTO> {
     const user = await this.accountService.findOne(email);
 
     if (!user) {

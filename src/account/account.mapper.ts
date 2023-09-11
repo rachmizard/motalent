@@ -20,7 +20,7 @@ export class AccountMapper {
     const { name, email, role, status, is_active, created_at, id, updated_at } =
       entity;
 
-    return new GetAccountDTO({
+    return {
       id,
       name,
       email,
@@ -29,6 +29,6 @@ export class AccountMapper {
       is_active,
       created_at,
       updated_at,
-    });
+    };
   }
 }
