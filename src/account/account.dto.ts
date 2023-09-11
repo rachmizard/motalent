@@ -1,8 +1,10 @@
+import { Role } from 'src/shared/enums/role.enum';
+
 export interface CreateAccountDTO {
   id?: string;
   name?: string;
   email?: string;
-  role?: string;
+  role?: Role;
   password?: string;
   salt?: string;
   status?: string;
@@ -13,7 +15,7 @@ export interface AccountDTO {
   id?: string;
   name?: string;
   email?: string;
-  role?: string;
+  role?: Role;
   status?: string;
   is_active?: boolean;
 }

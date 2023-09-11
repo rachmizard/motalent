@@ -1,3 +1,4 @@
+import { Role } from 'src/shared/enums/role.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
@@ -34,7 +35,7 @@ export class AccountEntity {
     default: 'client',
     nullable: true,
   })
-  role: string;
+  role: Role;
 
   @Column({
     type: 'enum',
