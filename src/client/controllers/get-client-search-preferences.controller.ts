@@ -5,7 +5,7 @@ import { Role } from '@src/shared/enums/role.enum';
 import { BaseResponseWithPagination } from '@src/shared/response/base.response';
 import { ClientService } from '../client.service';
 
-@Controller('/client/search-preferences')
+@Controller('search-preferences')
 export class GetClientSearchPreferencesController {
   constructor(private clientService: ClientService) {}
 
