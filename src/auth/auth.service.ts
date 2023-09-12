@@ -45,6 +45,9 @@ export class AuthService {
       sub: user?.id ?? null,
       name: user?.name ?? null,
       email: user?.email ?? null,
+      role: user?.role ?? null,
+      status: user?.status ?? null,
+      is_active: user?.is_active ?? null,
     };
 
     return {
