@@ -1,4 +1,12 @@
-import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 import { LocationService } from './location.service';
 import { Public } from '@src/auth/auth.decorator';
@@ -7,6 +15,7 @@ import { DistrictQueryParamsDTO } from './dtos/district-query-params.dto';
 import { VillageQueryParamsDTO } from './dtos/village-query-params.dto';
 
 @Controller()
+@UseInterceptors(CacheInterceptor)
 export class LocationController {
   constructor(private locationService: LocationService) {}
 
