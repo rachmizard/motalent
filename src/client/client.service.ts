@@ -1,4 +1,9 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { FindManyOptions, Repository } from 'typeorm';
 
 import { ClientEntity } from './entities/client.entity';
@@ -8,6 +13,7 @@ import { CreateClientDTO } from './dtos/create-client-dto';
 import { ClientSearchPreferenceEntity } from './entities/client-search-preference.entity';
 import { BaseParamsDTO } from '@src/shared/dtos/base-params.dto';
 import { PaginationAndFilterService } from '@src/shared/services/pagination.service';
+import { UpdateClientRegistrationDTO } from './dtos/update-client-registration.dto';
 
 @Injectable()
 export class ClientService {
@@ -66,5 +72,33 @@ export class ClientService {
       results: results.status === 'fulfilled' ? results.value : [],
       totalPages: totalPages.status === 'fulfilled' ? totalPages.value : 0,
     };
+  }
+
+  async updateClientRegistration(
+    clientId: number,
+    body: UpdateClientRegistrationDTO,
+  ) {
+    const existClient = await this.clientRepository.findOne({
+      where: {
+        id: clientId,
+      },
+    });
+
+    if (!existClient) {
+      throw new NotFoundException('Client not found');
+    }
+
+    const updatedClient = this.clientRepository.merge(existClient, {
+      ...body.profile,
+      ...body.location,
+    });
+    await this.clientRepository.save(updatedClient);
+
+    const mappedSearchPreferences = body.search_preferences.map((v) => ({
+      client: updatedClient,
+      ...v,
+    }));
+
+    await this.clientSearchPreferenceRepository.save(mappedSearchPreferences);
   }
 }

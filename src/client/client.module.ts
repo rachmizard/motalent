@@ -8,6 +8,9 @@ import { UpdateClientRegistrationController } from './controllers/update-client-
   imports: [DatabaseModule],
   providers: clientProviders,
   exports: clientProviders,
-  controllers: [GetClientSearchPreferencesController, UpdateClientRegistrationController],
+  controllers: [
+    GetClientSearchPreferencesController,
+    UpdateClientRegistrationController,
+  ],
 })
 export class ClientModule {}

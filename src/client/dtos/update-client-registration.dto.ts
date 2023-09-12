@@ -1,9 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { GenderEnum } from '@src/shared/enums/gender.enum';
+import { Type } from 'class-transformer';
 import {
-  IsDateString,
+  IsArray,
+  IsBoolean,
+  IsDefined,
+  IsEnum,
+  IsISO8601,
   IsNotEmpty,
-  IsNotEmptyObject,
+  IsNumber,
+  IsObject,
   IsOptional,
+  IsString,
+  ValidateNested,
 } from 'class-validator';
 
 class ClientProfileDTO {
@@ -11,25 +20,23 @@ class ClientProfileDTO {
     description: 'Client name',
     type: String,
   })
-  @IsNotEmpty({
-    message: 'Client name is required',
-  })
+  @IsNotEmpty()
+  @IsString()
   name: string;
 
   @ApiProperty({
     description: 'Client age',
     type: Number,
   })
-  @IsNotEmpty({
-    message: 'Client name is required',
-  })
+  @IsNotEmpty()
+  @IsNumber()
   age: number;
 
   @ApiProperty({
     description: 'Client date of birth',
     type: Date,
   })
-  @IsDateString()
+  @IsISO8601()
   @IsOptional()
   dob: Date | string;
 
@@ -37,6 +44,7 @@ class ClientProfileDTO {
     description: 'Client address',
     type: String,
   })
+  @IsString()
   @IsOptional()
   address: string;
 
@@ -44,15 +52,18 @@ class ClientProfileDTO {
     description: 'Client blood type',
     type: String,
   })
+  @IsString()
   @IsOptional()
   blood_type: string;
 
   @ApiProperty({
     description: 'Client gender',
     type: String,
+    enum: ['male', 'female'],
   })
+  @IsEnum(GenderEnum)
   @IsOptional()
-  gender: string;
+  gender: GenderEnum;
 }
 
 class ClientLocationDTO {
@@ -60,22 +71,33 @@ class ClientLocationDTO {
     description: 'Client province id',
     type: String,
   })
+  @IsString()
   @IsOptional()
   province_id: string | null;
 
   @ApiProperty({
-    description: 'Client city id',
+    description: 'Client regency id',
     type: String,
   })
+  @IsString()
   @IsOptional()
-  city_id: string | null;
+  regency_id: string | null;
 
   @ApiProperty({
     description: 'Client district id',
     type: String,
   })
+  @IsString()
   @IsOptional()
   district_id: string | null;
+
+  @ApiProperty({
+    description: 'Client village id',
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  village_id: string | null;
 }
 
 class ClientSeachPreferencesDTO {
@@ -83,97 +105,128 @@ class ClientSeachPreferencesDTO {
     description: 'Talent category ids',
     type: [String],
   })
+  @IsArray()
+  @IsOptional()
   category_ids: string[] | null;
 
   @ApiProperty({
-    description: 'Talent province ids',
-    type: [String],
+    description: 'Talent province id',
+    type: String,
   })
-  province_ids: string[] | null;
+  @IsString()
+  @IsOptional()
+  province_id: string | null;
 
   @ApiProperty({
-    description: 'Talent city ids',
-    type: [String],
+    description: 'Talent city id',
+    type: String,
   })
-  city_ids: string[] | null;
+  @IsString()
+  @IsOptional()
+  regency_id: string | null;
 
   @ApiProperty({
-    description: 'Talent district ids',
-    type: [String],
+    description: 'Talent district id',
+    type: String,
   })
-  district_ids: string[] | null;
+  @IsString()
+  @IsOptional()
+  district_id: string | null;
+
+  @ApiProperty({
+    description: 'Talent village id',
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  village_id: string | null;
 
   @ApiProperty({
     description: 'Talent min price',
     type: Number,
   })
+  @IsNumber()
+  @IsOptional()
   min_price: number | null;
 
   @ApiProperty({
     description: 'Talent max price',
     type: Number,
   })
+  @IsNumber()
+  @IsOptional()
   max_price: number | null;
 
   @ApiProperty({
     description: 'Talent min age',
     type: Number,
   })
+  @IsNumber()
+  @IsOptional()
   min_age: number | null;
 
   @ApiProperty({
     description: 'Talent max age',
     type: Number,
   })
+  @IsNumber()
+  @IsOptional()
   max_age: number | null;
 
   @ApiProperty({
     description: 'Talent is negotiable',
     type: Boolean,
   })
+  @IsBoolean()
+  @IsOptional()
   is_negotiable: boolean | null;
 
   @ApiProperty({
     description: 'Talent is down payment',
     type: Boolean,
   })
+  @IsBoolean()
+  @IsOptional()
   is_dp: boolean | null;
 }
 
 export class UpdateClientRegistrationDTO {
   @ApiProperty({
+    description: 'Client id',
+    type: Number,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  client_id: number;
+
+  @ApiProperty({
     description: 'Client profile data',
     type: ClientProfileDTO,
   })
-  @IsNotEmptyObject({
-    nullable: false,
-  })
-  @IsNotEmpty({
-    message: 'Client profile data is required',
-  })
+  @IsDefined()
+  @IsObject()
+  @ValidateNested({ each: true })
+  @Type(() => ClientProfileDTO)
   profile: ClientProfileDTO;
 
   @ApiProperty({
     description: 'Client location data',
     type: ClientLocationDTO,
   })
-  @IsNotEmptyObject({
-    nullable: false,
-  })
-  @IsNotEmpty({
-    message: 'Client location data is required',
-  })
+  @IsDefined()
+  @IsObject()
+  @ValidateNested({ each: true })
+  @Type(() => ClientLocationDTO)
   location: ClientLocationDTO;
 
   @ApiProperty({
     description: 'Client search preferences data',
+    isArray: true,
     type: ClientSeachPreferencesDTO,
   })
-  @IsNotEmptyObject({
-    nullable: false,
-  })
-  @IsNotEmpty({
-    message: 'Client search preferences data is required',
-  })
-  search_preferences: ClientSeachPreferencesDTO;
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ClientSeachPreferencesDTO)
+  search_preferences: ClientSeachPreferencesDTO[];
 }

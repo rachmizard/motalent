@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ClientSearchPreferenceEntity } from './client-search-preference.entity';
+import { GenderEnum } from '@src/shared/enums/gender.enum';
 
 @Entity({
   name: 'clients',
@@ -53,7 +54,7 @@ export class ClientEntity {
     enum: ['male', 'female'],
     nullable: true,
   })
-  gender: string;
+  gender: GenderEnum;
 
   @Column({
     type: 'enum',
@@ -64,16 +65,28 @@ export class ClientEntity {
   blood_type: string;
 
   @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'varchar',
+    nullable: true,
   })
-  created_at: Date;
+  province_id: string;
 
   @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    type: 'varchar',
+    nullable: true,
   })
-  updated_at: Date;
+  regency_id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  district_id: string;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  village_id: string;
 
   @OneToOne(() => AccountEntity, (account) => account.client)
   @JoinColumn({
@@ -87,4 +100,16 @@ export class ClientEntity {
   )
   @JoinColumn()
   search_preferences: ClientSearchPreferenceEntity[];
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  created_at: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updated_at: Date;
 }

@@ -32,6 +32,26 @@ export class ClientSearchPreferenceEntity {
   @Column()
   is_dp: boolean;
 
+  @Column({
+    nullable: true,
+  })
+  province_id: string;
+
+  @Column({
+    nullable: true,
+  })
+  regency_id: string;
+
+  @Column({
+    nullable: true,
+  })
+  district_id: string;
+
+  @Column({
+    nullable: true,
+  })
+  village_id: string;
+
   @ManyToOne(() => ClientEntity, (client) => client.search_preferences)
   @JoinColumn({ name: 'client_id' })
   client: ClientEntity;
