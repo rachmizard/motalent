@@ -42,7 +42,7 @@ export class AccountService {
     const account = this.accountRepository.create(dto);
     const savedAccount = await this.save(account);
 
-    const savedClient = await this.clientService.createClient({
+    const savedClient = await this.clientService.create({
       account: savedAccount,
       name: dto.name,
     });

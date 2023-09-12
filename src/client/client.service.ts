@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 
 import { ClientEntity } from './client.entity';
 
-import { DI_TYPES } from 'src/shared/di.types';
+import { DI_TYPES } from '@src/shared/di.types';
 import { CreateClientDTO } from './dtos/create-client-dto';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class ClientService {
     private clientRepository: Repository<ClientEntity>,
   ) {}
 
-  async createClient(payload: CreateClientDTO): Promise<ClientEntity> {
+  async create(payload: CreateClientDTO): Promise<ClientEntity> {
     const client = await this.clientRepository.findOneBy({
       account: payload.account,
     });
