@@ -7,9 +7,7 @@ import { AppConfigService } from './shared/app-config/app-config.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn', 'debug', 'fatal', 'verbose'],
-  });
+  const app = await NestFactory.create(AppModule);
   const appConfig = app.get(AppConfigService);
 
   app.useGlobalPipes(

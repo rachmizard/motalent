@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { AppDatabaseConfig } from './app-config.configuration';
+import {
+  AppDatabaseConfig,
+  AppHttpConfiguration,
+  AppLocationConfig,
+} from './app-config.configuration';
 
 @Injectable()
 export class AppConfigService {
@@ -37,5 +41,13 @@ export class AppConfigService {
 
   getDatabaseAutoSynchronize(): boolean {
     return this.getDatabaseConfig().syncronize;
+  }
+
+  getLocationConfig(): AppLocationConfig {
+    return this.configServce.get<AppLocationConfig>('location');
+  }
+
+  getHttpConfig(): AppHttpConfiguration {
+    return this.configServce.get<AppHttpConfiguration>('http');
   }
 }

@@ -22,7 +22,7 @@ import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 
 @ApiTags('Authentication')
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
 
