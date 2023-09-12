@@ -5,7 +5,6 @@ import { AccountModule } from 'src/account/account.module';
 import { CryptoModule } from 'src/shared/crypto/crypto.module';
 import { jwtConstants } from './auth.constant';
 import { AuthController } from './auth.controller';
-import { authProviders } from './auth.providers';
 import { AuthService } from './auth.service';
 
 @Module({
@@ -20,7 +19,7 @@ import { AuthService } from './auth.service';
       },
     }),
   ],
-  providers: authProviders,
+  providers: [AuthService],
   exports: [AuthService],
   controllers: [AuthController],
 })
