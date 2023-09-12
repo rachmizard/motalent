@@ -12,7 +12,11 @@ async function bootstrap() {
   });
   const appConfig = app.get(AppConfigService);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
   app.useGlobalFilters(new BaseExceptionFilter());
 
   const config = new DocumentBuilder()

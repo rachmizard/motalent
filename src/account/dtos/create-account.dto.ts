@@ -8,7 +8,7 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
-import { ClientEntity } from 'src/client/client.entity';
+import { ClientEntity } from '@src/client/entities/client.entity';
 import { Role, Status } from 'src/shared/enums/role.enum';
 
 export class CreateAccountDTO {

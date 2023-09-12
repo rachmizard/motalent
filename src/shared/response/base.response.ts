@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
 type BaseResponseProps<T, E = any> = {
@@ -7,6 +8,38 @@ type BaseResponseProps<T, E = any> = {
   data?: T;
   errors?: E;
 };
+
+type BaseResponseMetaDataProps = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  [key: string]: any;
+};
+
+export class BaseResponseMetaData implements BaseResponseMetaDataProps {
+  [key: string]: any;
+
+  @ApiProperty({
+    example: 0,
+  })
+  total: number;
+
+  @ApiProperty({
+    example: 1,
+  })
+  page: number;
+
+  @ApiProperty({
+    example: 10,
+  })
+  limit: number;
+
+  @ApiProperty({
+    example: 1,
+  })
+  totalPages: number;
+}
 
 export class BaseResponse<T, E = any> {
   @ApiProperty({
@@ -79,5 +112,37 @@ export class BaseResponse<T, E = any> {
       statusCode,
       errors,
     });
+  }
+}
+
+export class BaseResponseWithPagination<T, E> extends BaseResponse<T, E> {
+  @ApiProperty({
+    name: 'meta',
+    description: 'Meta data of the response',
+  })
+  meta: BaseResponseMetaData;
+
+  constructor(props: BaseResponseProps<T, E>) {
+    super(props);
+
+    this.meta = {
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 1,
+    };
+  }
+
+  public static paginate<T, E>(data: T, metaData: BaseResponseMetaDataProps) {
+    const response = new BaseResponseWithPagination<T, E>({
+      message: 'Success',
+      status: 'success',
+      statusCode: HttpStatus.OK,
+      data,
+    });
+
+    response.meta = metaData;
+
+    return response;
   }
 }
