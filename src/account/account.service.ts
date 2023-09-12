@@ -8,14 +8,15 @@ import { DI_TYPES } from 'src/shared/di.types';
 import { CreateAccountDTO } from './dtos/create-account.dto';
 import { UpdateAccountDTO } from './dtos';
 
-import { ClientService } from 'src/client/client.service';
+import { ClientEntity } from '@src/client/entities/client.entity';
 
 @Injectable()
 export class AccountService {
   constructor(
     @Inject(DI_TYPES.ACCOUNT_REPO)
     private accountRepository: Repository<AccountEntity>,
-    private clientService: ClientService,
+    @Inject(DI_TYPES.CLIENT_REPO)
+    private clientRepository: Repository<ClientEntity>,
   ) {}
 
   async findOne(email: string): Promise<AccountEntity | undefined> {
@@ -42,7 +43,7 @@ export class AccountService {
     const account = this.accountRepository.create(dto);
     const savedAccount = await this.save(account);
 
-    const savedClient = await this.clientService.create({
+    const savedClient = await this.clientRepository.save({
       account: savedAccount,
       name: dto.name,
     });

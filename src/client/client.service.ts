@@ -20,8 +20,16 @@ export class ClientService {
   ) {}
 
   async create(payload: CreateClientDTO): Promise<ClientEntity> {
-    const client = await this.clientRepository.findOneBy({
-      account: payload.account,
+    const client = await this.clientRepository.findOne({
+      where: {
+        account: {
+          id: payload.account_id?.toString(),
+        },
+      },
+      relations: {
+        account: true,
+      },
+      relationLoadStrategy: 'join',
     });
 
     if (client && String(payload.account_id) === String(client.id)) {
