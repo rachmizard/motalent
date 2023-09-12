@@ -21,6 +21,7 @@ async function bootstrap() {
     .setTitle('Motalent')
     .setDescription('The motalent API docs')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
