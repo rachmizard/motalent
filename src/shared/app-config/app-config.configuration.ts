@@ -24,7 +24,7 @@ export interface AppConfiguration {
 }
 
 export default (): AppConfiguration => ({
-  port: parseInt(process.env.APP_PORT, 10) || 3000,
+  port: 3000,
   location: {
     apiKey: process.env.INDONESIA_LOCATION_API_KEY,
     apiUrl: process.env.INDONESIA_LOCATION_API_URL_V2,
