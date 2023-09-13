@@ -10,7 +10,12 @@ import { AppConfigService } from './app-config.service';
   imports: [
     ConfigModule.forRoot({
       load: [appConfigConfiguration],
-      envFilePath: ['.env.local', '.env.development', '.env.production'],
+      envFilePath: [
+        '.env',
+        '.env.local',
+        '.env.development',
+        '.env.production',
+      ],
     }),
   ],
   providers: [AppConfigService, ...appConfigProviders],
