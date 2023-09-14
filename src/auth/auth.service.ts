@@ -13,8 +13,8 @@ import { SignInResponseDTO, SignUpDTO } from './auth.dto';
 
 import { AccountMapper } from 'src/account/account.mapper';
 import { CreateAccountDTO } from 'src/account/dtos/create-account.dto';
-import { Role, Status } from 'src/shared/enums/role.enum';
 import { GetAccountDTO } from 'src/account/dtos/get-account.dto';
+import { Role, Status } from 'src/shared/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -82,6 +82,26 @@ export class AuthService {
     const user = await this.accountService.findOne(email);
 
     return !!user;
+  }
+
+  async validateUser(email: string, password: string): Promise<boolean> {
+    const user = await this.accountService.findOne(email);
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    const isPasswordValid = this.cryptoService.syncComparePassword(
+      password,
+      user.salt,
+      user.password,
+    );
+
+    if (user && !isPasswordValid) {
+      return false;
+    }
+
+    return true;
   }
 
   async getProfile(id: string): Promise<GetAccountDTO> {

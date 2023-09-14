@@ -50,4 +50,12 @@ export class AppConfigService {
   getHttpConfig(): AppHttpConfiguration {
     return this.configServce.get<AppHttpConfiguration>('http');
   }
+
+  getJwtSecret(): string {
+    return this.configServce.get<string>('jwtSecret');
+  }
+
+  getJwtExpirationTime(): string {
+    return this.configServce.get<string>('jwtExpirationTime');
+  }
 }

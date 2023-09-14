@@ -18,17 +18,17 @@ import {
 import { BaseResponse } from 'src/shared/response/base.response';
 import { Public } from './auth.decorator';
 import { SignInDTO, SignInResponseDTO, SignUpDTO } from './auth.dto';
-import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @ApiTags('Authentication')
 @Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('sign-in')
-  @Public()
   @ApiOperation({ summary: 'Sign In' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 200, description: 'OK', type: null })
@@ -45,9 +45,9 @@ export class AuthController {
     );
   }
 
+  @Public()
   @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
-  @Public()
   @ApiOperation({ summary: 'Sign Up' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 200, description: 'OK', type: null })
@@ -57,7 +57,7 @@ export class AuthController {
     return BaseResponse.success(null, 'Account created', HttpStatus.CREATED);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   @ApiBearerAuth()
   @ApiOperation({
