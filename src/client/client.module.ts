@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { clientProviders } from './client.providers';
 import { DatabaseModule } from 'src/database/database.module';
+import { clientProviders } from './client.providers';
 import { GetClientSearchPreferencesController } from './controllers/get-client-search-preferences.controller';
 import { UpdateClientRegistrationController } from './controllers/update-client-registration.controller';
 

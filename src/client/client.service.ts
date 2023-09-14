@@ -1,19 +1,20 @@
 import {
-  Injectable,
-  Inject,
   BadRequestException,
+  Inject,
+  Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { UserRequest } from 'express';
 import { FindManyOptions, Repository } from 'typeorm';
 
 import { ClientEntity } from './entities/client.entity';
 
 import { DI_TYPES } from '@src/shared/di.types';
-import { CreateClientDTO } from './dtos/create-client-dto';
-import { ClientSearchPreferenceEntity } from './entities/client-search-preference.entity';
 import { BaseParamsDTO } from '@src/shared/dtos/base-params.dto';
 import { PaginationAndFilterService } from '@src/shared/services/pagination.service';
+import { CreateClientDTO } from './dtos/create-client-dto';
 import { UpdateClientRegistrationDTO } from './dtos/update-client-registration.dto';
+import { ClientSearchPreferenceEntity } from './entities/client-search-preference.entity';
 
 @Injectable()
 export class ClientService {
@@ -47,11 +48,24 @@ export class ClientService {
 
   async getClientSearchPreferencesByClientId(
     clientId: number,
+    userRequest: UserRequest,
     params: BaseParamsDTO,
   ): Promise<{
     results: ClientSearchPreferenceEntity[];
     totalPages: number;
   }> {
+    const clientAccount = await this.clientRepository.findOne({
+      where: {
+        account: {
+          id: userRequest.id.toString(),
+        },
+      },
+    });
+
+    if (clientAccount.id !== clientId) {
+      throw new BadRequestException('Client not found');
+    }
+
     const options: FindManyOptions<ClientSearchPreferenceEntity> = {
       where: {
         client: {
