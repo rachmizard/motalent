@@ -1,17 +1,17 @@
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
-import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
 
+import { AccountModule } from './account/account.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { AccountModule } from './account/account.module';
-import { AppConfigModule } from './shared/app-config/app-config.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { ClientModule } from './client/client.module';
-import { AuthGuard } from './auth/auth.guard';
-import { RoleGuard } from './shared/guards/role/role.guard';
 import { GeneralModule } from './general/general.module';
 import { LocationModule } from './general/location.module';
+import { AppConfigModule } from './shared/app-config/app-config.module';
+import { RoleGuard } from './shared/guards/role/role.guard';
 
 @Module({
   imports: [
@@ -56,7 +56,7 @@ import { LocationModule } from './general/location.module';
     AppService,
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
+      useClass: JwtAuthGuard,
     },
     {
       provide: APP_GUARD,
