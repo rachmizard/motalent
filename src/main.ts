@@ -1,13 +1,19 @@
-import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 
-import { AppModule } from './app.module';
-import { BaseExceptionFilter } from './shared/filters/base-exception.filter';
-import { AppConfigService } from './shared/app-config/app-config.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+import { AppConfigService } from './shared/app-config/app-config.service';
+import { BaseExceptionFilter } from './shared/filters/base-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    allowedHeaders: '*',
+    maxAge: 3600,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: '*',
+  });
   const appConfig = app.get(AppConfigService);
 
   app.useGlobalPipes(
