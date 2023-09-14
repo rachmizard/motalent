@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRequest } from 'express';
+import { AuthAccountRequest } from 'express';
 import { FindManyOptions, Repository } from 'typeorm';
 
 import { ClientEntity } from './entities/client.entity';
@@ -48,7 +48,7 @@ export class ClientService {
 
   async getClientSearchPreferencesByClientId(
     clientId: number,
-    userRequest: UserRequest,
+    account: AuthAccountRequest,
     params: BaseParamsDTO,
   ): Promise<{
     results: ClientSearchPreferenceEntity[];
@@ -57,7 +57,7 @@ export class ClientService {
     const clientAccount = await this.clientRepository.findOne({
       where: {
         account: {
-          id: userRequest.id.toString(),
+          id: account.id.toString(),
         },
       },
     });

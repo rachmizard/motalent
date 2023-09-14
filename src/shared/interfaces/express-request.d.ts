@@ -2,10 +2,10 @@ import { Role, Status } from '../enums/role.enum';
 
 declare module 'express' {
   interface Request {
-    user?: UserRequest;
+    user?: AuthAccountRequest;
   }
 
-  interface UserRequest {
+  interface AuthAccountRequest {
     id: number;
     email: string;
     role: Role;
