@@ -1,8 +1,8 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 interface IBaseParamsDTO {
-  page: string;
-  limit: string;
+  page: number;
+  limit: number;
   order: string;
   orderBy: string;
   search: string;
@@ -10,29 +10,29 @@ interface IBaseParamsDTO {
   [key: string]: any;
 }
 
-export class BaseParamsDTO {
+export class BaseParamsDTO implements IBaseParamsDTO {
   @IsOptional()
-  private page: number = 1;
+  page: number;
 
   @IsOptional()
-  private limit: number = 10;
+  limit: number;
 
   @IsEnum(['ASC', 'DESC'], {
     message: 'Order must be ASC or DESC',
   })
   @IsOptional()
-  private order: string = 'ASC';
+  order: string = 'ASC';
 
   @IsString()
   @IsOptional()
-  private orderBy: string = 'id';
+  orderBy: string = 'id';
 
   @IsString()
   @IsOptional()
-  private search: string;
+  search: string;
 
   @IsOptional()
-  private filters: Record<string, any> = {};
+  filters: Record<string, any> = {};
 
   [key: string]: any;
 
@@ -48,15 +48,19 @@ export class BaseParamsDTO {
       if (this.page < 1) {
         this.page = 1;
       }
+
+      if (this.limit < 1) {
+        this.limit = 10;
+      }
     }
   }
 
   getPage(): number {
-    return this.page;
+    return this.page || 1;
   }
 
   getLimit(): number {
-    return this.limit;
+    return this.limit || 10;
   }
 
   getOrder(): string {
@@ -73,8 +77,8 @@ export class BaseParamsDTO {
 
   getParams(): IBaseParamsDTO {
     return {
-      page: this.page?.toString(),
-      limit: this.limit.toString(),
+      page: this.page,
+      limit: this.limit,
       order: this.order,
       orderBy: this.orderBy,
       search: this.search,
