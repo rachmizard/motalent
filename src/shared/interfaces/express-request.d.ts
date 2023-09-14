@@ -6,14 +6,14 @@ declare module 'express' {
   }
 
   interface AuthAccountRequest {
-    id: number;
+    id: string | number;
     email: string;
     role: Role;
-    sub: number;
+    sub: string | number;
     name: string;
     status: Status;
     is_active: boolean;
-    iat: number;
-    exp: number;
+    iat?: number;
+    exp?: number;
   }
 }

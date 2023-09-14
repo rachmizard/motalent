@@ -11,6 +11,7 @@ import { CryptoService } from 'src/shared/crypto/crypto.service';
 
 import { SignInResponseDTO, SignUpDTO } from './auth.dto';
 
+import { AuthAccountRequest } from 'express';
 import { AccountMapper } from 'src/account/account.mapper';
 import { CreateAccountDTO } from 'src/account/dtos/create-account.dto';
 import { GetAccountDTO } from 'src/account/dtos/get-account.dto';
@@ -41,7 +42,8 @@ export class AuthService {
       throw new UnauthorizedException('Wrong password');
     }
 
-    const payload = {
+    const authAccountRequest: AuthAccountRequest = {
+      id: user?.id ?? null,
       sub: user?.id ?? null,
       name: user?.name ?? null,
       email: user?.email ?? null,
@@ -51,7 +53,7 @@ export class AuthService {
     };
 
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: await this.jwtService.signAsync(authAccountRequest),
     };
   }
 
