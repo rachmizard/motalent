@@ -3,12 +3,16 @@ import { DataSource } from 'typeorm';
 
 import { PaginationAndFilterService } from '@src/shared/services/pagination.service';
 import { DI_TYPES } from 'src/shared/di.types';
-import { ClientService } from './client.service';
 import { ClientSearchPreferenceEntity } from './entities/client-search-preference.entity';
 import { ClientEntity } from './entities/client.entity';
+import { GetClientSearchPreferencesByClientIdUseCase } from './usecases/get-client-search-preferences-by-client-id.usecase';
+import { UpdateClientRegistrationUseCase } from './usecases/update-client-registration.usecase';
 
 export const clientProviders: Provider[] = [
-  ClientService,
+  // Services
+  PaginationAndFilterService,
+
+  // Repositories
   {
     provide: DI_TYPES.CLIENT_REPO,
     inject: [DI_TYPES.DATA_SOURCE],
@@ -23,5 +27,8 @@ export const clientProviders: Provider[] = [
         ClientSearchPreferenceEntity,
       ),
   },
-  PaginationAndFilterService,
+
+  // Use cases
+  GetClientSearchPreferencesByClientIdUseCase,
+  UpdateClientRegistrationUseCase,
 ];

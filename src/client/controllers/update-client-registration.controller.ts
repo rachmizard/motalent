@@ -9,14 +9,14 @@ import {
 import { Roles } from '@src/shared/decorators/role.decorator';
 import { Role } from '@src/shared/enums/role.enum';
 import { BaseResponse } from '@src/shared/response/base.response';
-import { ClientService } from '../client.service';
 import { UpdateClientRegistrationDTO } from '../dtos/update-client-registration.dto';
+import { UpdateClientRegistrationUseCase } from '../usecases/update-client-registration.usecase';
 
 @ApiTags('Client')
 @ApiBearerAuth()
 @Controller()
 export class UpdateClientRegistrationController {
-  constructor(private readonly clientService: ClientService) {}
+  constructor(private readonly usecase: UpdateClientRegistrationUseCase) {}
 
   @ApiOperation({
     summary: 'Update client registration',
@@ -27,7 +27,10 @@ export class UpdateClientRegistrationController {
   @Put('update-client-registration')
   @Roles(Role.CLIENT)
   async updateClientRegistration(@Body() body: UpdateClientRegistrationDTO) {
-    await this.clientService.updateClientRegistration(body.client_id, body);
+    await this.usecase.execute({
+      body,
+      clientId: body.client_id,
+    });
 
     return BaseResponse.success(
       null,
