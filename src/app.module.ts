@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { ClientModule } from './client/client.module';
+import { CategoryModule } from './general/category/category.module';
 import { GeneralModule } from './general/general.module';
 import { LocationModule } from './general/location.module';
 import { AppConfigModule } from './shared/app-config/app-config.module';
@@ -26,6 +27,7 @@ import { RoleGuard } from './shared/guards/role/role.guard';
     AccountModule,
     GeneralModule,
     LocationModule,
+    CategoryModule,
     RouterModule.register([
       {
         path: 'auth',
@@ -46,6 +48,10 @@ import { RoleGuard } from './shared/guards/role/role.guard';
           {
             path: 'location',
             module: LocationModule,
+          },
+          {
+            path: 'categories',
+            module: CategoryModule,
           },
         ],
       },

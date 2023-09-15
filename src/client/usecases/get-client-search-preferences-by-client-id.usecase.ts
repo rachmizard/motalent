@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { AuthAccountRequest } from 'express';
 import { FindManyOptions, Repository } from 'typeorm';
 
-import { DI_TYPES } from '@src/shared/di.types';
+import { locator } from '@src/shared/di.types';
 import { BaseParamsDTO } from '@src/shared/dtos/base-params.dto';
 import { PaginationAndFilterService } from '@src/shared/services/pagination.service';
 import { UseCase } from '@src/shared/usecase';
@@ -24,9 +24,9 @@ interface Result {
 @Injectable()
 export class GetClientSearchPreferencesByClientIdUseCase extends UseCase<Result> {
   constructor(
-    @Inject(DI_TYPES.CLIENT_REPO)
+    @Inject(locator.clientRepository)
     private clientRepository: Repository<ClientEntity>,
-    @Inject(DI_TYPES.CLIENT_SEARCH_PREFERENCE_REPO)
+    @Inject(locator.clientSearchPreferenceRepository)
     private clientSearchPreferenceRepository: Repository<ClientSearchPreferenceEntity>,
     private paginationAndFilterService: PaginationAndFilterService<ClientSearchPreferenceEntity>,
   ) {

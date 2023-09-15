@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { DI_TYPES } from '@src/shared/di.types';
+import { locator } from '@src/shared/di.types';
 import { UseCase } from '@src/shared/usecase';
 import { UpdateClientRegistrationDTO } from '../dtos/update-client-registration.dto';
 import { ClientSearchPreferenceEntity } from '../entities/client-search-preference.entity';
@@ -17,9 +17,9 @@ type Result = void;
 @Injectable()
 export class UpdateClientRegistrationUseCase extends UseCase<Result> {
   constructor(
-    @Inject(DI_TYPES.CLIENT_REPO)
+    @Inject(locator.clientRepository)
     private readonly clientRepository: Repository<ClientEntity>,
-    @Inject(DI_TYPES.CLIENT_SEARCH_PREFERENCE_REPO)
+    @Inject(locator.clientSearchPreferenceRepository)
     private readonly clientSearchPreferenceRepository: Repository<ClientSearchPreferenceEntity>,
   ) {
     super();

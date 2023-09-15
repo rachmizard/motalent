@@ -2,7 +2,7 @@ import { Provider } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 import { PaginationAndFilterService } from '@src/shared/services/pagination.service';
-import { DI_TYPES } from 'src/shared/di.types';
+import { locator } from 'src/shared/di.types';
 import { ClientSearchPreferenceEntity } from './entities/client-search-preference.entity';
 import { ClientEntity } from './entities/client.entity';
 import { GetClientSearchPreferencesByClientIdUseCase } from './usecases/get-client-search-preferences-by-client-id.usecase';
@@ -14,14 +14,14 @@ export const clientProviders: Provider[] = [
 
   // Repositories
   {
-    provide: DI_TYPES.CLIENT_REPO,
-    inject: [DI_TYPES.DATA_SOURCE],
+    provide: locator.clientRepository,
+    inject: [locator.dataSource],
     useFactory: (dataSource: DataSource) =>
       dataSource.getRepository<ClientEntity>(ClientEntity),
   },
   {
-    provide: DI_TYPES.CLIENT_SEARCH_PREFERENCE_REPO,
-    inject: [DI_TYPES.DATA_SOURCE],
+    provide: locator.clientSearchPreferenceRepository,
+    inject: [locator.dataSource],
     useFactory: (dataSource: DataSource) =>
       dataSource.getRepository<ClientSearchPreferenceEntity>(
         ClientSearchPreferenceEntity,

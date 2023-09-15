@@ -1,20 +1,49 @@
-import { applyDecorators } from '@nestjs/common';
-import { ApiResponse } from '@nestjs/swagger';
-import { BaseResponse } from '../response/base.response';
+import { Type, applyDecorators } from '@nestjs/common';
+import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 
-type SwaggerBaseResponseProps = {
-  statusCode?: number;
-  description?: string;
-};
+import {
+  BaseResponse,
+  BaseResponseWithPagination,
+} from '../response/base.response';
 
-export function SwaggerBaseResponse(props: SwaggerBaseResponseProps) {
-  const { statusCode, description } = props || {};
-
-  return applyDecorators(
-    ApiResponse({
-      type: BaseResponse,
-      description,
-      status: statusCode,
+export const ApiOkeBaseResponse = <T extends Type<unknown>>(dataDto: T) =>
+  applyDecorators(
+    ApiExtraModels(BaseResponse, dataDto),
+    ApiOkResponse({
+      schema: {
+        allOf: [
+          { $ref: getSchemaPath(BaseResponse) },
+          {
+            properties: {
+              data: {
+                type: 'array',
+                items: { $ref: getSchemaPath(dataDto) },
+              },
+            },
+          },
+        ],
+      },
     }),
   );
-}
+
+export const ApiOkeBaseResponsePaginated = <T extends Type<unknown>>(
+  dataDto: T,
+) =>
+  applyDecorators(
+    ApiExtraModels(BaseResponseWithPagination, dataDto),
+    ApiOkResponse({
+      schema: {
+        allOf: [
+          { $ref: getSchemaPath(BaseResponseWithPagination) },
+          {
+            properties: {
+              data: {
+                type: 'array',
+                items: { $ref: getSchemaPath(dataDto) },
+              },
+            },
+          },
+        ],
+      },
+    }),
+  );

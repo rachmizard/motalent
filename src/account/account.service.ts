@@ -4,18 +4,18 @@ import { Repository } from 'typeorm';
 import { AccountEntity } from './account.entity';
 import { AccountMapper } from './account.mapper';
 
-import { DI_TYPES } from 'src/shared/di.types';
-import { CreateAccountDTO } from './dtos/create-account.dto';
+import { locator } from 'src/shared/di.types';
 import { UpdateAccountDTO } from './dtos';
+import { CreateAccountDTO } from './dtos/create-account.dto';
 
 import { ClientEntity } from '@src/client/entities/client.entity';
 
 @Injectable()
 export class AccountService {
   constructor(
-    @Inject(DI_TYPES.ACCOUNT_REPO)
+    @Inject(locator.accountRepository)
     private accountRepository: Repository<AccountEntity>,
-    @Inject(DI_TYPES.CLIENT_REPO)
+    @Inject(locator.clientRepository)
     private clientRepository: Repository<ClientEntity>,
   ) {}
 
