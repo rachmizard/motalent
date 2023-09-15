@@ -46,8 +46,7 @@ export class GetAccountDTO {
   is_active: boolean;
 
   @ApiProperty({
-    type: 'object',
-    default: true,
+    type: ClientDTO,
   })
   client: ClientDTO;
 

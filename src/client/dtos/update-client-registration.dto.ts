@@ -100,7 +100,7 @@ class ClientLocationDTO {
   village_id: string | null;
 }
 
-class ClientSeachPreferencesDTO {
+export class ClientSearchPreferencesDTO {
   @ApiProperty({
     description: 'Talent category ids',
     type: [String],
@@ -222,11 +222,11 @@ export class UpdateClientRegistrationDTO {
   @ApiProperty({
     description: 'Client search preferences data',
     isArray: true,
-    type: ClientSeachPreferencesDTO,
+    type: ClientSearchPreferencesDTO,
   })
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => ClientSeachPreferencesDTO)
-  search_preferences: ClientSeachPreferencesDTO[];
+  @Type(() => ClientSearchPreferencesDTO)
+  search_preferences: ClientSearchPreferencesDTO[];
 }

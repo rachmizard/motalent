@@ -26,6 +26,23 @@ export const ApiOkeBaseResponse = <T extends Type<unknown>>(dataDto: T) =>
     }),
   );
 
+export const ApiOkeBaseResponseSingle = <T extends Type<unknown>>(dataDto: T) =>
+  applyDecorators(
+    ApiExtraModels(BaseResponse, dataDto),
+    ApiOkResponse({
+      schema: {
+        allOf: [
+          { $ref: getSchemaPath(BaseResponse) },
+          {
+            properties: {
+              data: { $ref: getSchemaPath(dataDto) },
+            },
+          },
+        ],
+      },
+    }),
+  );
+
 export const ApiOkeBaseResponsePaginated = <T extends Type<unknown>>(
   dataDto: T,
 ) =>

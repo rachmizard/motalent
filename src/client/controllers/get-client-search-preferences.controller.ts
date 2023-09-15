@@ -10,9 +10,11 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request as ExpressRequest } from 'express';
 
 import { Roles } from '@src/shared/decorators/role.decorator';
+import { ApiOkeBaseResponsePaginated } from '@src/shared/decorators/swagger.decorator';
 import { BaseParamsDTO } from '@src/shared/dtos/base-params.dto';
 import { Role } from '@src/shared/enums/role.enum';
 import { BaseResponseWithPagination } from '@src/shared/response/base.response';
+import { ClientSearchPreferencesDTO } from '../dtos/update-client-registration.dto';
 import { GetClientSearchPreferencesByClientIdUseCase } from '../usecases/get-client-search-preferences-by-client-id.usecase';
 
 @ApiTags('Client')
@@ -24,6 +26,7 @@ export class GetClientSearchPreferencesController {
   @Get(':client_id')
   @HttpCode(200)
   @Roles(Role.CLIENT)
+  @ApiOkeBaseResponsePaginated(ClientSearchPreferencesDTO)
   async getClientSearchPreferences(
     @Query() queryParams: BaseParamsDTO,
     @Param('client_id') clientId: number,

@@ -98,3 +98,8 @@ export class SignInResponseDTO {
   })
   access_token: string;
 }
+
+export class SignUpResponseDTO {
+  @ApiProperty()
+  message: string;
+}

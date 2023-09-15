@@ -15,9 +15,16 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { GetAccountDTO } from '@src/account/dtos';
+import { ApiOkeBaseResponseSingle } from '@src/shared/decorators/swagger.decorator';
 import { BaseResponse } from 'src/shared/response/base.response';
 import { Public } from './auth.decorator';
-import { SignInDTO, SignInResponseDTO, SignUpDTO } from './auth.dto';
+import {
+  SignInDTO,
+  SignInResponseDTO,
+  SignUpDTO,
+  SignUpResponseDTO,
+} from './auth.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
@@ -31,7 +38,7 @@ export class AuthController {
   @Post('sign-in')
   @ApiOperation({ summary: 'Sign In' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 200, description: 'OK', type: null })
+  @ApiOkeBaseResponseSingle(SignInResponseDTO)
   async signIn(@Body() signInDTO: SignInDTO) {
     const signedInResult = await this.authService.signIn(
       signInDTO.email,
@@ -50,11 +57,17 @@ export class AuthController {
   @Post('sign-up')
   @ApiOperation({ summary: 'Sign Up' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 200, description: 'OK', type: null })
+  @ApiOkeBaseResponseSingle(SignUpResponseDTO)
   async signUp(@Body() signUpDTO: SignUpDTO) {
     await this.authService.signUp(signUpDTO);
 
-    return BaseResponse.success(null, 'Account created', HttpStatus.CREATED);
+    return BaseResponse.success(
+      {
+        message: 'Account created',
+      },
+      'Account created',
+      HttpStatus.CREATED,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -64,6 +77,7 @@ export class AuthController {
     summary: 'Get Profile',
     description: 'Get Profile',
   })
+  @ApiOkeBaseResponseSingle(GetAccountDTO)
   async getProfile(@Request() req: any) {
     const account = await this.authService.getProfile(req.user.sub);
     return BaseResponse.success(
