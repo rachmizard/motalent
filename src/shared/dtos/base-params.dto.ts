@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 interface IBaseParamsDTO {
@@ -11,26 +12,57 @@ interface IBaseParamsDTO {
 }
 
 export class BaseParamsDTO implements IBaseParamsDTO {
+  @ApiProperty({
+    name: 'page',
+    type: 'number',
+    default: 1,
+  })
   @IsOptional()
   page: number;
 
+  @ApiProperty({
+    name: 'limit',
+    type: 'number',
+    default: 10,
+  })
   @IsOptional()
   limit: number;
 
+  @ApiProperty({
+    name: 'order',
+    type: 'string',
+    enum: ['ASC', 'DESC'],
+    default: 'ASC',
+  })
   @IsEnum(['ASC', 'DESC'], {
     message: 'Order must be ASC or DESC',
   })
   @IsOptional()
   order: string = 'ASC';
 
+  @ApiProperty({
+    name: 'orderBy',
+    type: 'string',
+    default: 'id',
+  })
   @IsString()
   @IsOptional()
   orderBy: string = 'id';
 
+  @ApiProperty({
+    name: 'search',
+    type: 'string',
+    default: '',
+  })
   @IsString()
   @IsOptional()
   search: string;
 
+  @ApiProperty({
+    name: 'filters',
+    type: 'object',
+    default: {},
+  })
   @IsOptional()
   filters: Record<string, any> = {};
 
