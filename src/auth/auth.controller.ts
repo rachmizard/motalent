@@ -59,15 +59,9 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiOkeBaseResponseSingle(SignUpResponseDTO)
   async signUp(@Body() signUpDTO: SignUpDTO) {
-    await this.authService.signUp(signUpDTO);
+    const res = await this.authService.signUp(signUpDTO);
 
-    return BaseResponse.success(
-      {
-        message: 'Account created',
-      },
-      'Account created',
-      HttpStatus.CREATED,
-    );
+    return BaseResponse.success(res, 'Account created', HttpStatus.CREATED);
   }
 
   @UseGuards(JwtAuthGuard)

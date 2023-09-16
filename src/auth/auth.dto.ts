@@ -102,4 +102,11 @@ export class SignInResponseDTO {
 export class SignUpResponseDTO {
   @ApiProperty()
   message: string;
+
+  @ApiProperty({
+    name: 'access_token',
+    example: 'someToken...',
+    description: 'The access token of the Account',
+  })
+  access_token: string;
 }

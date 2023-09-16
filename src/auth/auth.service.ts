@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AccountService } from 'src/account/account.service';
 import { CryptoService } from 'src/shared/crypto/crypto.service';
 
-import { SignInResponseDTO, SignUpDTO } from './auth.dto';
+import { SignInResponseDTO, SignUpDTO, SignUpResponseDTO } from './auth.dto';
 
 import { AuthAccountRequest } from 'express';
 import { AccountMapper } from 'src/account/account.mapper';
@@ -57,7 +57,7 @@ export class AuthService {
     };
   }
 
-  async signUp(signUpDTO: SignUpDTO) {
+  async signUp(signUpDTO: SignUpDTO): Promise<SignUpResponseDTO> {
     if (signUpDTO.password !== signUpDTO.password_confirmation) {
       throw new BadRequestException('Password confirmation does not match');
     }
@@ -78,6 +78,11 @@ export class AuthService {
     };
 
     await this.accountService.create(payload);
+
+    return {
+      message: 'Account created successfully',
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 
   async accountExists(email: string): Promise<boolean> {
