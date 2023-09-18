@@ -1,6 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
+import { AccountEntity } from '@src/account/account.entity';
 import { locator } from '@src/shared/di.types';
 import { UseCase } from '@src/shared/usecase';
 import { UpdateClientRegistrationDTO } from '../dtos/update-client-registration.dto';
@@ -21,6 +22,10 @@ export class UpdateClientRegistrationUseCase extends UseCase<Result> {
     private readonly clientRepository: Repository<ClientEntity>,
     @Inject(locator.clientSearchPreferenceRepository)
     private readonly clientSearchPreferenceRepository: Repository<ClientSearchPreferenceEntity>,
+    @Inject(locator.accountRepository)
+    private readonly accountRepository: Repository<AccountEntity>,
+    @Inject(locator.dataSource)
+    private readonly dataSource: DataSource,
   ) {
     super();
   }
@@ -29,6 +34,9 @@ export class UpdateClientRegistrationUseCase extends UseCase<Result> {
     const existClient = await this.clientRepository.findOne({
       where: {
         id: clientId,
+      },
+      relations: {
+        account: true,
       },
     });
 
@@ -39,20 +47,51 @@ export class UpdateClientRegistrationUseCase extends UseCase<Result> {
     return existClient;
   }
 
-  async execute({ clientId, body }: UseCaseArgs): Promise<Result> {
-    const existClient = await this.validateClient(clientId);
-
-    const updatedClient = this.clientRepository.merge(existClient, {
+  async updateClient(client: ClientEntity, body: UpdateClientRegistrationDTO) {
+    const updatedClient = this.clientRepository.merge(client, {
       ...body.profile,
       ...body.location,
     });
-    await this.clientRepository.save(updatedClient);
+    return updatedClient;
+  }
 
+  async createSearchPreferences(
+    client: ClientEntity,
+    body: UpdateClientRegistrationDTO,
+  ) {
     const mappedSearchPreferences = body.search_preferences.map((v) => ({
-      client: updatedClient,
+      client,
       ...v,
     }));
 
-    await this.clientSearchPreferenceRepository.save(mappedSearchPreferences);
+    const updatedSearchPreferences =
+      this.clientSearchPreferenceRepository.create(mappedSearchPreferences);
+    return updatedSearchPreferences;
+  }
+
+  async updateAccount(client: ClientEntity) {
+    const updatedAccount = this.accountRepository.create({
+      id: client.account.id,
+      has_complete_registration: true,
+    });
+    return updatedAccount;
+  }
+
+  async execute({ clientId, body }: UseCaseArgs): Promise<Result> {
+    await this.dataSource.transaction(async (manager) => {
+      const existClient = await this.validateClient(clientId);
+      const updatedClient = await this.updateClient(existClient, body);
+
+      await manager.save(updatedClient);
+
+      const createdSearchPreferences = await this.createSearchPreferences(
+        updatedClient,
+        body,
+      );
+      await manager.save(createdSearchPreferences);
+
+      const updatedAccount = await this.updateAccount(updatedClient);
+      await manager.save(updatedAccount);
+    });
   }
 }

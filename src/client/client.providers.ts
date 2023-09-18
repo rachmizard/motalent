@@ -1,6 +1,7 @@
 import { Provider } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
+import { AccountEntity } from '@src/account/account.entity';
 import { PaginationAndFilterService } from '@src/shared/services/pagination.service';
 import { locator } from 'src/shared/di.types';
 import { ClientSearchPreferenceEntity } from './entities/client-search-preference.entity';
@@ -26,6 +27,12 @@ export const clientProviders: Provider[] = [
       dataSource.getRepository<ClientSearchPreferenceEntity>(
         ClientSearchPreferenceEntity,
       ),
+  },
+  {
+    provide: locator.accountRepository,
+    inject: [locator.dataSource],
+    useFactory: (dataSource: DataSource) =>
+      dataSource.getRepository<AccountEntity>(AccountEntity),
   },
 
   // Use cases
