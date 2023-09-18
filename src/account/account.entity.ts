@@ -66,6 +66,20 @@ export class AccountEntity {
   salt: string;
 
   @Column({
+    type: 'boolean',
+    default: false,
+  })
+  has_complete_registration: boolean;
+
+  @OneToOne(() => ClientEntity, (account) => account.account, {
+    eager: true,
+  })
+  @JoinColumn({
+    name: 'client_id',
+  })
+  client: ClientEntity;
+
+  @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
@@ -78,12 +92,4 @@ export class AccountEntity {
     nullable: true,
   })
   updated_at: Date;
-
-  @OneToOne(() => ClientEntity, (account) => account.account, {
-    eager: true,
-  })
-  @JoinColumn({
-    name: 'client_id',
-  })
-  client: ClientEntity;
 }
