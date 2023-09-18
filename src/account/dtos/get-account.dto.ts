@@ -46,6 +46,13 @@ export class GetAccountDTO {
   is_active: boolean;
 
   @ApiProperty({
+    name: 'has_complete_registration',
+    type: 'boolean',
+    default: false,
+  })
+  has_complete_registration: boolean;
+
+  @ApiProperty({
     type: ClientDTO,
   })
   client: ClientDTO;

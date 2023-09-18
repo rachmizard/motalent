@@ -27,6 +27,7 @@ export class AccountMapper {
       status: entity.status,
       is_active: entity.is_active,
       client: entity.client,
+      has_complete_registration: entity.has_complete_registration,
     });
   }
 }
