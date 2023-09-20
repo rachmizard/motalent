@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -15,7 +16,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { GetAccountDTO } from '@src/account/dtos';
+import { GetAccountDTO, UpdateAccountDTO } from '@src/account/dtos';
 import { ApiOkeBaseResponseSingle } from '@src/shared/decorators/swagger.decorator';
 import { BaseResponse } from 'src/shared/response/base.response';
 import { Public } from './auth.decorator';
@@ -79,5 +80,19 @@ export class AuthController {
       'Account Retrieved Successfully',
       HttpStatus.OK,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('update-profile')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Update Profile',
+  })
+  @ApiOkeBaseResponseSingle(GetAccountDTO)
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async updateProfile(@Body() body: UpdateAccountDTO) {
+    await this.authService.updateProfile(body);
+    return BaseResponse.success(null, 'Account Updated Successfully');
   }
 }

@@ -11,6 +11,7 @@ import { CryptoService } from 'src/shared/crypto/crypto.service';
 
 import { SignInResponseDTO, SignUpDTO, SignUpResponseDTO } from './auth.dto';
 
+import { UpdateAccountDTO } from '@src/account/dtos';
 import { AuthAccountRequest } from 'express';
 import { AccountMapper } from 'src/account/account.mapper';
 import { CreateAccountDTO } from 'src/account/dtos/create-account.dto';
@@ -119,5 +120,37 @@ export class AuthService {
     }
 
     return AccountMapper.toDTO(user);
+  }
+
+  async updateProfile(body: UpdateAccountDTO): Promise<GetAccountDTO> {
+    const user = await this.accountService.findById(body.id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (body.password !== body.password_confirmation) {
+      throw new BadRequestException('Password confirmation does not match');
+    }
+
+    let password = user.password;
+
+    if (!!body.password) {
+      password = await this.cryptoService.hashPassword(
+        body.password,
+        user.salt,
+      );
+    }
+
+    const payload: UpdateAccountDTO = {
+      id: body.id,
+      name: body.name,
+      email: body.email,
+      password,
+    };
+
+    const updatedAccount = await this.accountService.update(payload);
+
+    return AccountMapper.toDTO(updatedAccount);
   }
 }
