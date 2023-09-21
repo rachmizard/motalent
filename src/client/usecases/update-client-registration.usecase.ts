@@ -16,7 +16,10 @@ interface UseCaseArgs {
 type Result = void;
 
 @Injectable()
-export class UpdateClientRegistrationUseCase extends UseCase<Result> {
+export class UpdateClientRegistrationUseCase extends UseCase<
+  Result,
+  UseCaseArgs
+> {
   constructor(
     @Inject(locator.clientRepository)
     private readonly clientRepository: Repository<ClientEntity>,

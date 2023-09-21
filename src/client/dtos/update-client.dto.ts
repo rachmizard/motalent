@@ -1,3 +1,5 @@
+import { PartialType } from '@nestjs/mapped-types';
+
 import { ApiProperty } from '@nestjs/swagger';
 import { GenderEnum } from '@src/shared/enums/gender.enum';
 import {
@@ -8,15 +10,9 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { BloodTypeEnum, CreateClientDTO } from './create-client-dto';
 
-export enum BloodTypeEnum {
-  A = 'A',
-  B = 'B',
-  AB = 'AB',
-  O = 'O',
-}
-
-export class CreateClientDTO {
+export class UpdateClientDTO extends PartialType(CreateClientDTO) {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -69,8 +65,4 @@ export class CreateClientDTO {
   @IsString()
   @IsOptional()
   village_id?: string;
-
-  @ApiProperty()
-  @IsNumber()
-  account_id?: number;
 }

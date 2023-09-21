@@ -22,7 +22,10 @@ interface Result {
 }
 
 @Injectable()
-export class GetClientSearchPreferencesByClientIdUseCase extends UseCase<Result> {
+export class GetClientSearchPreferencesByClientIdUseCase extends UseCase<
+  Result,
+  UseCaseArgs
+> {
   constructor(
     @Inject(locator.clientRepository)
     private clientRepository: Repository<ClientEntity>,

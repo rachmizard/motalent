@@ -8,6 +8,7 @@ import { ClientSearchPreferenceEntity } from './entities/client-search-preferenc
 import { ClientEntity } from './entities/client.entity';
 import { GetClientSearchPreferencesByClientIdUseCase } from './usecases/get-client-search-preferences-by-client-id.usecase';
 import { UpdateClientRegistrationUseCase } from './usecases/update-client-registration.usecase';
+import { UpdateClientUseCase } from './usecases/update-client.usecase';
 
 export const clientProviders: Provider[] = [
   // Services
@@ -38,4 +39,5 @@ export const clientProviders: Provider[] = [
   // Use cases
   GetClientSearchPreferencesByClientIdUseCase,
   UpdateClientRegistrationUseCase,
+  UpdateClientUseCase,
 ];
