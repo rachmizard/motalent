@@ -18,5 +18,6 @@ export const locator = {
   clientSearchPreferenceRepository: Symbol(
     'CLIENT_SEARCH_PREFERENCE_REPOSITORY',
   ),
+  clientJobPostingRepository: Symbol('CLIENT_JOB_POSTING_REPOSITORY'),
   categoryRepository: Symbol('CATEGORY_REPOSITORY'),
 };

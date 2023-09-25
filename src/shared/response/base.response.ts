@@ -105,6 +105,15 @@ export class BaseResponse<T, E = any> {
     });
   }
 
+  static ok<T>(data: T, message = 'Success', statusCode = HttpStatus.OK) {
+    return new BaseResponse<T>({
+      message,
+      status: 'success',
+      statusCode,
+      data,
+    });
+  }
+
   static error<T>(errors: T, message = 'Error', statusCode = 400) {
     return new BaseResponse<T>({
       message,

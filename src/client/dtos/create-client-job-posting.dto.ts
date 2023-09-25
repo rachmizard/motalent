@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -18,6 +19,15 @@ import {
 } from './../entities/client-job-postings.entity';
 
 export class CreateClientJobPostingDTO {
+  @ApiProperty({
+    description: 'Client ID',
+    type: String,
+    default: '1',
+  })
+  @IsString()
+  @IsNotEmpty()
+  public client_id: string;
+
   @ApiProperty({
     description: 'Title of job posting',
     type: String,
@@ -40,7 +50,6 @@ export class CreateClientJobPostingDTO {
     enumName: 'JobPostingStatusType',
   })
   @IsEnum(JobPostingStatusType)
-  @Transform(({ value }) => JobPostingStatusType[value])
   status: JobPostingStatusType;
 
   @ApiProperty({
@@ -49,7 +58,6 @@ export class CreateClientJobPostingDTO {
     enumName: 'PaymentType',
   })
   @IsEnum(PaymentType)
-  @Transform(({ value }) => PaymentType[value])
   payment_type: PaymentType;
 
   @ApiProperty({
@@ -98,7 +106,6 @@ export class CreateClientJobPostingDTO {
     enumName: 'DownPaymentType',
   })
   @IsEnum(DownPaymentType)
-  @Transform(({ value }) => DownPaymentType[value])
   down_payment_type: DownPaymentType;
 
   @ApiProperty({
@@ -125,7 +132,6 @@ export class CreateClientJobPostingDTO {
     enumName: 'JobType',
   })
   @IsEnum(JobType)
-  @Transform(({ value }) => JobType[value])
   job_type: JobType;
 
   @ApiProperty({
@@ -144,7 +150,6 @@ export class CreateClientJobPostingDTO {
     enumName: 'ContractDurationType',
   })
   @IsEnum(ContractDurationType)
-  @Transform(({ value }) => ContractDurationType[value])
   contract_duration_type: ContractDurationType;
 
   @ApiProperty({
