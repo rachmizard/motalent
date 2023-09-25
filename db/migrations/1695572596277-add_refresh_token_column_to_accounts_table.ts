@@ -6,7 +6,7 @@ export class AddRefreshTokenColumnToAccountsTable1695572596277
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
             ALTER TABLE accounts
-            ADD COLUMN refresh_token VARCHAR(255) NULL
+            ADD COLUMN refresh_token TEXT NULL
         `);
   }
 
