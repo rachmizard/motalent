@@ -81,6 +81,16 @@ export class CreateClientJobPostingDTO {
   min_payment_fee: number;
 
   @ApiProperty({
+    description: 'Maximum payment fee of job posting',
+    type: Number,
+    minimum: 0,
+    default: 0,
+  })
+  @IsNumber()
+  @Min(0)
+  max_payment_fee: number;
+
+  @ApiProperty({
     description: 'Down payment percentage of job posting',
     type: Number,
     minimum: 0,
