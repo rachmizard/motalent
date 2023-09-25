@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -9,9 +10,15 @@ import { JwtService } from '@nestjs/jwt';
 import { AccountService } from 'src/account/account.service';
 import { CryptoService } from 'src/shared/crypto/crypto.service';
 
-import { SignInResponseDTO, SignUpDTO, SignUpResponseDTO } from './auth.dto';
+import {
+  RefreshTokenResponseDTO,
+  SignInResponseDTO,
+  SignUpDTO,
+  SignUpResponseDTO,
+} from './auth.dto';
 
 import { UpdateAccountDTO } from '@src/account/dtos';
+import { AppConfigService } from '@src/shared/app-config/app-config.service';
 import { AuthAccountRequest } from 'express';
 import { AccountMapper } from 'src/account/account.mapper';
 import { CreateAccountDTO } from 'src/account/dtos/create-account.dto';
@@ -24,6 +31,7 @@ export class AuthService {
     private accountService: AccountService,
     private jwtService: JwtService,
     private cryptoService: CryptoService,
+    private configService: AppConfigService,
   ) {}
 
   async signIn(email: string, password: string): Promise<SignInResponseDTO> {
@@ -53,9 +61,11 @@ export class AuthService {
       is_active: user?.is_active ?? null,
     };
 
-    return {
-      access_token: await this.jwtService.signAsync(authAccountRequest),
-    };
+    const tokens = await this.getTokens(authAccountRequest);
+
+    await this.accountService.updateRefreshToken(user.id, tokens.refresh_token);
+
+    return tokens;
   }
 
   async signUp(signUpDTO: SignUpDTO): Promise<SignUpResponseDTO> {
@@ -78,11 +88,26 @@ export class AuthService {
       status: Status.ACTIVE,
     };
 
-    await this.accountService.create(payload);
+    const createdAccount = await this.accountService.create(payload);
+
+    const tokens = await this.getTokens({
+      email: createdAccount.email,
+      id: createdAccount.id,
+      name: createdAccount.name,
+      role: createdAccount.role,
+      is_active: createdAccount.is_active,
+      status: createdAccount.status,
+      sub: createdAccount.id,
+    });
+
+    await this.accountService.updateRefreshToken(
+      createdAccount.id,
+      tokens.refresh_token,
+    );
 
     return {
       message: 'Account created successfully',
-      access_token: await this.jwtService.signAsync(payload),
+      ...tokens,
     };
   }
 
@@ -92,7 +117,7 @@ export class AuthService {
     return !!user;
   }
 
-  async validateUser(email: string, password: string): Promise<boolean> {
+  async validateAccount(email: string, password: string): Promise<boolean> {
     const user = await this.accountService.findOne(email);
 
     if (!user) {
@@ -152,5 +177,63 @@ export class AuthService {
     const updatedAccount = await this.accountService.update(payload);
 
     return AccountMapper.toDTO(updatedAccount);
+  }
+
+  public async getTokens(account: AuthAccountRequest) {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(account, {
+        secret: this.configService.getJwtSecret(),
+        expiresIn: this.configService.getJwtExpirationTime(),
+      }),
+      this.jwtService.signAsync(account, {
+        secret: this.configService.getJwtRefreshSecret(),
+        expiresIn: this.configService.getJwtRefreshExpirationTime(),
+      }),
+    ]);
+
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    };
+  }
+
+  public async refreshTokens(
+    accountId: string,
+    refreshToken: string,
+  ): Promise<RefreshTokenResponseDTO> {
+    const account = await this.accountService.findById(accountId);
+
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+
+    if (!account.refresh_token) {
+      throw new ForbiddenException('Refresh token not found');
+    }
+
+    if (account.refresh_token !== refreshToken) {
+      throw new ForbiddenException('Refresh token does not match');
+    }
+
+    const decoded = await this.jwtService.verifyAsync(refreshToken, {
+      secret: this.configService.getJwtRefreshSecret(),
+    });
+
+    const tokens = await this.getTokens({
+      email: decoded.email,
+      id: decoded.id,
+      name: decoded.name,
+      role: decoded.role,
+      is_active: decoded.is_active,
+      status: decoded.status,
+      sub: decoded.id,
+    });
+
+    await this.accountService.updateRefreshToken(
+      accountId,
+      tokens.refresh_token,
+    );
+
+    return tokens;
   }
 }

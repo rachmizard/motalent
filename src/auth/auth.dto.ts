@@ -97,6 +97,13 @@ export class SignInResponseDTO {
     description: 'The access token of the Account',
   })
   access_token: string;
+
+  @ApiProperty({
+    name: 'refresh_token',
+    example: 'someToken...',
+    description: 'The refresh token of the Account',
+  })
+  refresh_token: string;
 }
 
 export class SignUpResponseDTO {
@@ -109,4 +116,37 @@ export class SignUpResponseDTO {
     description: 'The access token of the Account',
   })
   access_token: string;
+
+  @ApiProperty({
+    name: 'refresh_token',
+    example: 'someToken...',
+    description: 'The refresh token of the Account',
+  })
+  refresh_token: string;
+}
+
+export class RefreshTokenResponseDTO {
+  @ApiProperty({
+    name: 'access_token',
+    example: 'someToken...',
+    description: 'The access token of the Account',
+  })
+  access_token: string;
+
+  @ApiProperty({
+    name: 'refresh_token',
+    example: 'someToken...',
+    description: 'The refresh token of the Account',
+  })
+  refresh_token: string;
+}
+
+export class RefreshTokenRequestDTO {
+  @ApiProperty({
+    name: 'refresh_token',
+    example: 'someToken...',
+    description: 'The refresh token of the Account',
+    required: true,
+  })
+  refresh_token: string;
 }

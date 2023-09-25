@@ -68,6 +68,23 @@ export class AccountService {
     return entity;
   }
 
+  async updateRefreshToken(
+    id: string,
+    refreshToken: string,
+  ): Promise<AccountEntity> {
+    const result = await this.accountRepository.findOneBy({
+      id,
+    });
+
+    if (!result) {
+      throw new Error('Account not found');
+    }
+
+    result.refresh_token = refreshToken;
+
+    return await this.accountRepository.save(result);
+  }
+
   async save(account: AccountEntity): Promise<AccountEntity> {
     return await this.accountRepository.save(account);
   }

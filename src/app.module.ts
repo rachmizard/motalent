@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RefreshTokenGuard } from './auth/guards/refresh-token.guard';
 import { ClientModule } from './client/client.module';
 import { CategoryModule } from './general/category/category.module';
 import { GeneralModule } from './general/general.module';
@@ -60,6 +61,10 @@ import { RoleGuard } from './shared/guards/role/role.guard';
   controllers: [AppController],
   providers: [
     AppService,
+    {
+      provide: APP_GUARD,
+      useClass: RefreshTokenGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

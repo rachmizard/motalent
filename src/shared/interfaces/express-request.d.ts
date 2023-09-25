@@ -7,12 +7,12 @@ declare module 'express' {
 
   interface AuthAccountRequest {
     id: string | number;
-    email: string;
-    role: Role;
-    sub: string | number;
-    name: string;
-    status: Status;
-    is_active: boolean;
+    email?: string;
+    role?: Role;
+    sub?: string | number;
+    name?: string;
+    status?: Status;
+    is_active?: boolean;
     iat?: number;
     exp?: number;
   }

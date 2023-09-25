@@ -22,13 +22,17 @@ export interface AppConfiguration {
   location: AppLocationConfig;
   http: AppHttpConfiguration;
   jwtSecret: string;
+  jwtRefreshSecret: string;
   jwtExpirationTime: string;
+  jwtRefreshExpirationTime?: string;
 }
 
 export default (): AppConfiguration => ({
   port: parseInt(process.env.APP_PORT, 10) || 3000,
   jwtExpirationTime: process.env.JWT_EXPIRATION_TIME,
   jwtSecret: process.env.JWT_SECRET,
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
+  jwtRefreshExpirationTime: process.env.JWT_REFRESH_EXPIRATION_TIME,
   location: {
     apiKey: process.env.INDONESIA_LOCATION_API_KEY,
     apiUrl: process.env.INDONESIA_LOCATION_API_URL_V2,

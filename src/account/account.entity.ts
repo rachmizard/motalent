@@ -66,6 +66,13 @@ export class AccountEntity {
   salt: string;
 
   @Column({
+    type: 'varchar',
+    nullable: true,
+    default: null,
+  })
+  refresh_token: string;
+
+  @Column({
     type: 'boolean',
     default: false,
   })

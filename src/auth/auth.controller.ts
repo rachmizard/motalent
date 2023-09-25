@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   Put,
+  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -21,6 +22,8 @@ import { ApiOkeBaseResponseSingle } from '@src/shared/decorators/swagger.decorat
 import { BaseResponse } from 'src/shared/response/base.response';
 import { Public } from './auth.decorator';
 import {
+  RefreshTokenRequestDTO,
+  RefreshTokenResponseDTO,
   SignInDTO,
   SignInResponseDTO,
   SignUpDTO,
@@ -28,6 +31,7 @@ import {
 } from './auth.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RefreshTokenGuard } from './guards/refresh-token.guard';
 
 @ApiTags('Authentication')
 @Controller()
@@ -94,5 +98,19 @@ export class AuthController {
   async updateProfile(@Body() body: UpdateAccountDTO) {
     await this.authService.updateProfile(body);
     return BaseResponse.success(null, 'Account Updated Successfully');
+  }
+
+  @UseGuards(RefreshTokenGuard)
+  @Post('refresh-tokens')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Refresh Tokens',
+  })
+  @ApiOkeBaseResponseSingle(RefreshTokenResponseDTO)
+  refreshTokens(@Body() body: RefreshTokenRequestDTO, @Req() req: any) {
+    const userId = req.user['sub'];
+    const refreshToken = req.user['refreshToken'];
+
+    return this.authService.refreshTokens(userId, refreshToken);
   }
 }

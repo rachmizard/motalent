@@ -10,12 +10,14 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 
 @Module({
   imports: [
     AccountModule,
     CryptoModule,
     PassportModule,
+    AppConfigModule,
     JwtModule.registerAsync({
       imports: [AppConfigModule],
       inject: [AppConfigService],
@@ -27,7 +29,7 @@ import { LocalStrategy } from './strategies/local.strategy';
       }),
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, RefreshTokenStrategy],
   exports: [AuthService],
   controllers: [AuthController],
 })
