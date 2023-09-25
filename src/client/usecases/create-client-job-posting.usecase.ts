@@ -3,14 +3,15 @@ import {
   Inject,
   Injectable,
   NotFoundException,
-  NotImplementedException,
 } from '@nestjs/common';
+import { DataSource, Repository } from 'typeorm';
+
 import { AccountEntity } from '@src/account/account.entity';
 import { locator } from '@src/shared/di.types';
 import { UseCase } from '@src/shared/usecase';
-import { Repository } from 'typeorm';
 import { CreateClientJobPostingDTO } from '../dtos/create-client-job-posting.dto';
 import { ClientJobPostingEntity } from '../entities/client-job-postings.entity';
+import { ClientEntity } from '../entities/client.entity';
 
 type Result = void;
 
@@ -23,6 +24,10 @@ export class CreateClientJobPostingUseCase
     private readonly clientJobPostingRepository: Repository<ClientJobPostingEntity>,
     @Inject(locator.accountRepository)
     private readonly accountRepository: Repository<AccountEntity>,
+    @Inject(locator.clientRepository)
+    private readonly clientRepository: Repository<ClientEntity>,
+    @Inject(locator.dataSource)
+    private readonly dataSource: DataSource,
   ) {}
 
   protected async hasCompleteRegistration(
@@ -34,39 +39,61 @@ export class CreateClientJobPostingUseCase
           id: Number(clientId),
         },
       },
-      relations: ['client'],
+      relations: {
+        client: true,
+      },
     });
+
+    if (account.client?.id !== Number(clientId)) {
+      throw new NotFoundException('Client not found');
+    }
 
     if (!account || !account.client) {
       throw new NotFoundException('Client or Account not found');
     }
 
-    return !!account.has_complete_registration;
+    return account.has_complete_registration;
+  }
+
+  public async create(
+    body: CreateClientJobPostingDTO,
+  ): Promise<ClientJobPostingEntity> {
+    const clientJobPosting = this.clientJobPostingRepository.create();
+    const client = await this.clientRepository.findOne({
+      where: {
+        id: parseInt(body.client_id),
+      },
+    });
+
+    const transformed: ClientJobPostingEntity = {
+      ...clientJobPosting,
+      ...body,
+      client,
+    };
+
+    return this.clientJobPostingRepository.create(transformed);
+  }
+
+  public async save(
+    props: ClientJobPostingEntity,
+  ): Promise<ClientJobPostingEntity> {
+    return this.dataSource.transaction(async (manager) => {
+      return await manager.save(props);
+    });
   }
 
   public async execute(body: CreateClientJobPostingDTO): Promise<Result> {
-    try {
-      const isCompletedRegistration = await this.hasCompleteRegistration(
-        body.client_id,
+    const isCompletedRegistration = await this.hasCompleteRegistration(
+      body.client_id,
+    );
+
+    if (!isCompletedRegistration) {
+      throw new BadRequestException(
+        'Client is not finished registration process yet',
       );
-
-      if (!isCompletedRegistration) {
-        throw new BadRequestException(
-          'Client is not finished registration process yet',
-        );
-      }
-
-      throw new NotImplementedException('Not implemented yet');
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message);
-      }
-
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException(error.message);
-      }
-
-      throw new Error(error);
     }
+
+    const createdJobPosting = await this.create(body);
+    await this.save(createdJobPosting);
   }
 }
