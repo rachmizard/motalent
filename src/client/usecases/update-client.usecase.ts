@@ -8,13 +8,16 @@ import { UseCase } from '@src/shared/usecase';
 import { UpdateClientDTO } from '../dtos/update-client.dto';
 import { ClientEntity } from '../entities/client.entity';
 
-interface UpdateClientArguments {
+interface Arguments {
   clientId: string;
   body: UpdateClientDTO;
 }
 
 @Injectable()
-export class UpdateClientUseCase extends UseCase<void, UpdateClientArguments> {
+export class UpdateClientUseCase extends UseCase<
+  Partial<ClientEntity>,
+  Arguments
+> {
   constructor(
     @Inject(locator.clientRepository)
     private readonly clientRepository: Repository<ClientEntity>,
@@ -22,10 +25,17 @@ export class UpdateClientUseCase extends UseCase<void, UpdateClientArguments> {
     super();
   }
 
+  private toEntity(data: Partial<UpdateClientDTO>): Partial<ClientEntity> {
+    return {
+      ...data,
+      gender: GenderEnum[data.gender],
+    };
+  }
+
   public async execute({
     body,
     clientId,
-  }: UpdateClientArguments): Promise<void> {
+  }: Arguments): Promise<Partial<ClientEntity>> {
     const client = await this.clientRepository.findOne({
       where: {
         id: parseInt(clientId),
@@ -36,11 +46,13 @@ export class UpdateClientUseCase extends UseCase<void, UpdateClientArguments> {
       throw new Error('Client not found');
     }
 
-    const transformedPayload: Partial<ClientEntity> = {
-      ...body,
-      gender: GenderEnum[body.gender],
-    };
+    const savedClient = await this.clientRepository.save(
+      this.toEntity({
+        ...client,
+        ...body,
+      }),
+    );
 
-    await this.clientRepository.update(clientId, transformedPayload);
+    return savedClient;
   }
 }
