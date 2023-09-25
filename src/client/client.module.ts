@@ -4,6 +4,7 @@ import { clientProviders } from './client.providers';
 import { GetClientSearchPreferencesController } from './controllers/get-client-search-preferences.controller';
 import { UpdateClientRegistrationController } from './controllers/update-client-registration.controller';
 import { UpdateClientController } from './controllers/update-client.controller';
+import { CreateClientJobPostingControllerController } from './controllers/create-client-job-posting-controller.controller';
 
 @Module({
   imports: [DatabaseModule],
@@ -13,6 +14,7 @@ import { UpdateClientController } from './controllers/update-client.controller';
     GetClientSearchPreferencesController,
     UpdateClientRegistrationController,
     UpdateClientController,
+    CreateClientJobPostingControllerController,
   ],
 })
 export class ClientModule {}
