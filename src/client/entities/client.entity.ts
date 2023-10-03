@@ -1,3 +1,4 @@
+import { GenderEnum } from '@src/shared/enums/gender.enum';
 import { AccountEntity } from 'src/account/account.entity';
 import {
   Column,
@@ -7,8 +8,8 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ClientJobPostingEntity } from './client-job-postings.entity';
 import { ClientSearchPreferenceEntity } from './client-search-preference.entity';
-import { GenderEnum } from '@src/shared/enums/gender.enum';
 
 @Entity({
   name: 'clients',
@@ -88,18 +89,23 @@ export class ClientEntity {
   })
   village_id: string;
 
-  @OneToOne(() => AccountEntity, (account) => account.client)
+  @OneToOne(() => AccountEntity, (entities) => entities.client)
   @JoinColumn({
     name: 'account_id',
   })
   account: AccountEntity;
 
-  @OneToMany(
-    () => ClientSearchPreferenceEntity,
-    (search_preference) => search_preference.client,
-  )
+  @OneToMany(() => ClientSearchPreferenceEntity, (entities) => entities.client)
   @JoinColumn()
   search_preferences: ClientSearchPreferenceEntity[];
+
+  @OneToMany(() => ClientJobPostingEntity, (entities) => entities.client, {
+    lazy: true,
+  })
+  @JoinColumn()
+  client_job_postings:
+    | Promise<ClientJobPostingEntity[]>
+    | ClientJobPostingEntity[];
 
   @Column({
     type: 'timestamp',

@@ -19,7 +19,7 @@ export const databaseProviders: Provider[] = [
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: configService.getDatabaseAutoSynchronize(), // Set to false in production,
         migrations: [__dirname + '/../../db/migrations/*{.ts,.js}'],
-        migrationsRun: true,
+        migrationsRun: false,
       });
 
       return dataSource.initialize();
